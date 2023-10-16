@@ -21,6 +21,7 @@ FILE* crearDat(){
             propiedades = fopen ("propiedades.dat", "w+b");
             if (propiedades == NULL){
                 printf ("Error en la apertura del archivo\n");
+                exit (1);
             }
             printf ("Archivo creado o sobrescrito exitosamente.\n");
         } else if (tolower (opcion) == 'n'){
@@ -28,10 +29,12 @@ FILE* crearDat(){
             propiedades = fopen ("propiedades.dar", "rb+");
             if (propiedades == NULL){
                 printf ("Error en la apertura del archivo\n");
+                exit (1);
             }
             printf ("Archivo abierto exitosamente.\n");
         } else {
             printf ("Opci%dn inv%alida.\n", 162,160);
+            exit (1;)
         }
         return propiedades;
     } while (tolower (opcion) != 's' || tolower (opcion) !='n');
@@ -52,15 +55,27 @@ void listarDat(){
     //4. un rango de tiempo (min, max)
 }
 
-//impresion con formato del menu principal.
+//(PUNTO 1) Impresion con formato del menu principal.
 void mostrarMenu(){
-    
+    printf ("--------Menú Inicial--------\n");
+    printf ("[a]. Listar propiedades.\n");
+    printf ("[b]. Alta de una propiedad.\n");
+    printf ("[c]. Buscar propiedad.\n");
+    printf ("[d]. Modificar propiedades.\n");
+    printf ("[e]. Baja logica de una propiedad.\n");
+    printf ("[f]. Baja fisica de una propiedad.\n");
+    printf ("[g]. Listar baja fisica de propiedades.\n");
+    printf ("[h]. Salir.\n");
+    ingresarOpcion();    
 }
-
 //pide una entrada al usuario y valida que sea un caracter ascii
 //si es valido, lo devuelve.
 char ingresarOpcion(){
-    
+    char opcion;
+    printf ("Ingrese su opcion: ");
+    scanf (" %c", &opcion);
+    opcion = tolower (opcion);
+    return opcion;
 }
 
 //inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
@@ -124,7 +139,7 @@ int main(){
     while(1){
         mostrarMenu();
         char input = ingresarOpcion();
-        switch input{
+        switch (input) {
             case 'a':
                 listarDat(propiedades);
                 break;
@@ -147,10 +162,12 @@ int main(){
                 listarXyz(bajasXyz);
                 break;
             case 'h':
+            //cerrar el archivo y salir del programa
+                fclose (propiedades);
+                printf("Gracias por confiar en Inmobiliaria Bubú\n");
                 exit(0);
             default:
-                printf("poneme una letra válida flaco");
-                
+                printf("Opci%dn inv%dlida. Int%dntelo de nuevo.\n", 162, 160, 130);
         }   
     }
     return 0;
