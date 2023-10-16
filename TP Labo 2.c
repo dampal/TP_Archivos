@@ -3,14 +3,36 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include "validaciones.h"
 
-//Crea el archivo propiedades.dat
-//si la creacion es exitosa, devuelve un puntero activo al archivo.
+//(PUNTO 4) Crea el archivo propiedades.dat
+//crea o sobreescribe el existente
 //si no, tira error y termina la ejecución del programa.
-FILE* crearDat(MAX_PROPIEDADES){
-    
+FILE* crearDat(){
+    char opcion;
+    printf ("¿Desea crear un nuevo archivo o sobrescribirlo?(S/N): ");
+    scanf("%s", &opcion);
+
+    if (opcion == 's' || opcion == "S"){
+        //crea/sobreescribe el archivo
+        propiedades = fopen ("propiedades.dat", "w+b");
+        if (propiedades == NULL){
+            printf ("Error en la apertura del archivo\n");
+        }
+        printf ("Archivo creado o sobrescrito exitosamente.\n");
+    } else if ( opcion == 'n' || opcion == 'N'){
+        //Abrir el archivo existente
+        propiedades = fopen ("propiedades.dar", "rb+");
+        if (propiedades == NULL){
+            printf ("Error en la apertura del archivo\n");
+        }
+        printf ("Archivo abierto exitosamente.\n");
+    } else {
+        printf ("Opci%dn inv%alida.\n", 162,160)
+    }
+    return propiedades;
 }
 
 //imprime una propiedad con el formato correspondiente.
