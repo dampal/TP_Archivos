@@ -13,9 +13,9 @@
 FILE* crearDat(){
     char opcion;
     printf ("¿Desea crear un nuevo archivo o sobrescribirlo?(S/N): ");
-    scanf("%s", &opcion);
+    scanf("%c", &opcion);
 
-    if (opcion == 's' || opcion == "S"){
+    if (opcion == 's' || opcion == 'S'){
         //crea/sobreescribe el archivo
         propiedades = fopen ("propiedades.dat", "w+b");
         if (propiedades == NULL){
@@ -30,7 +30,8 @@ FILE* crearDat(){
         }
         printf ("Archivo abierto exitosamente.\n");
     } else {
-        printf ("Opci%dn inv%alida.\n", 162,160)
+        printf ("Opci%dn inv%alida.\n", 162,160);
+        return crearDat();
     }
     return propiedades;
 }
