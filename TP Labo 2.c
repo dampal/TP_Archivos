@@ -15,6 +15,8 @@ FILE* crearDat(MAX_PROPIEDADES){
     
 }
 
+//HOLAAAAAAAAAAAA
+
 //imprime una propiedad con el formato correspondiente.
 void imprimirPropiedad(FILE* propiedades){
     
