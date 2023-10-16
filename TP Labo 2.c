@@ -82,7 +82,21 @@ char ingresarOpcion(){
 //valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
 //llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.
 void altaPropiedad(FILE* propiedades){
-    
+    int ID = validarID();
+    int fechaIngreso = validarFecha();
+    char zona [30] = validarTexto();
+    char ciudad_barrio [30] = validarTexto();
+    int dormitorios = validarNumero();
+    int baños = validarNumero();
+    float supTotal = validarNumero();
+    float supCubierta = validarNumero();
+    float precio = validarNumero();
+    char moneda = validarMoneda();
+    char propiedad = validarPropiedad();
+    char operacion = validarOperacion();
+
+    //Fecha de Salida
+    //Activo
 }
 
 //busca una propiedad en el archivo segun ID.
