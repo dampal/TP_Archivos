@@ -12,28 +12,29 @@
 //si no, tira error y termina la ejecución del programa.
 FILE* crearDat(){
     char opcion;
-    printf ("¿Desea crear un nuevo archivo o sobrescribirlo?(S/N): ");
-    scanf("%c", &opcion);
+    do {
+        printf ("¿Desea crear un nuevo archivo o sobrescribirlo?(S/N): ");
+        scanf("%c", &opcion);
 
-    if (opcion == 's' || opcion == 'S'){
-        //crea/sobreescribe el archivo
-        propiedades = fopen ("propiedades.dat", "w+b");
-        if (propiedades == NULL){
-            printf ("Error en la apertura del archivo\n");
+        if (tolower (opcion) == 's'){
+            //crea/sobreescribe el archivo
+            propiedades = fopen ("propiedades.dat", "w+b");
+            if (propiedades == NULL){
+                printf ("Error en la apertura del archivo\n");
+            }
+            printf ("Archivo creado o sobrescrito exitosamente.\n");
+        } else if (tolower (opcion) == 'n'){
+            //Abrir el archivo existente
+            propiedades = fopen ("propiedades.dar", "rb+");
+            if (propiedades == NULL){
+                printf ("Error en la apertura del archivo\n");
+            }
+            printf ("Archivo abierto exitosamente.\n");
+        } else {
+            printf ("Opci%dn inv%alida.\n", 162,160);
         }
-        printf ("Archivo creado o sobrescrito exitosamente.\n");
-    } else if ( opcion == 'n' || opcion == 'N'){
-        //Abrir el archivo existente
-        propiedades = fopen ("propiedades.dar", "rb+");
-        if (propiedades == NULL){
-            printf ("Error en la apertura del archivo\n");
-        }
-        printf ("Archivo abierto exitosamente.\n");
-    } else {
-        printf ("Opci%dn inv%alida.\n", 162,160);
-        return crearDat();
-    }
-    return propiedades;
+        return propiedades;
+    } while (tolower (opcion) != 's' || tolower (opcion) !='n');
 }
 
 //imprime una propiedad con el formato correspondiente.
