@@ -1,5 +1,3 @@
-//cambio cambio 123
-
 #define FILENAME "propiedades.dat"
 
 #include <stdio.h>

@@ -1,15 +1,22 @@
 /*Biblioteca personal que permite verificar los datos ingresados por usuario,
 teniendo un menor margen de error.*/
+
+#include <time.h>
+#include <string.h>
+#include <ctype.h>
+
 #ifndef VALIDACIONES_H
 #define VALIDACIONES_H
 
-int validarID(int id);
-int validarNumero (); //CHEQUEALO
+int validarInt(char id[]);
+
+int validarFloat(char flotante[])
+
 int validarFecha(char fecha[]);
+
 int validarTexto (char texto[]);
-int validarPropiedad (char propiedad[]);
-int validarOperacion (char operacion[]);
-int validarMoneda (char moneda[]);
-int validarPrimerMayus (char formato[]);
+
+int validarMayus (char formato[]);
+
 
 #endif
