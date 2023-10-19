@@ -1,5 +1,4 @@
 //cambio cambio 123
-//franco estuvo aca
 
 #define FILENAME "propiedades.dat"
 
@@ -13,14 +12,14 @@
 //si la creacion es exitosa, devuelve un puntero activo al archivo.
 //si no, tira error y termina la ejecución del programa.
 FILE* crearDat(MAX_PROPIEDADES){
-
+    
 }
 
 //HOLAAAAAAAAAAAA
 
 //imprime una propiedad con el formato correspondiente.
 void imprimirPropiedad(FILE* propiedades){
-
+    
 }
 
 //impresion con formato del archivo de propiedades.
@@ -35,20 +34,20 @@ void listarDat(){
 
 //impresion con formato del menu principal.
 void mostrarMenu(){
-
+    
 }
 
 //pide una entrada al usuario y valida que sea un caracter ascii
 //si es valido, lo devuelve.
 char ingresarOpcion(){
-
+    
 }
 
 //inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
 //valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
 //llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.
 void altaPropiedad(FILE* propiedades){
-
+    
 }
 
 //busca una propiedad en el archivo segun ID.
@@ -56,15 +55,15 @@ void altaPropiedad(FILE* propiedades){
 //cambia el campo "activo" a cero.
 //NO ESTOY SEGURO DE QUE ESTO ES LO QUE QUIERA LA PROFE
 void bajaLogica(FILE* propiedades){
-
+    
 }
 
 buscarPorID(propiedades){
-
+    
 }
 
 buscarPorOp(propiedades){
-
+    
 }
 
 //muestra un submenu de opciones.
@@ -83,7 +82,7 @@ void buscarPropiedad(FILE* propiedades){
 //siempre validando la entrada del usuario segun el campo modificado.
 //pide una confirmación antes de modificar el registro.
 void modificarPropiedad(FILE* propiedades){
-
+    
 }
 
 //crea un archivo "propiedades_bajas_<fecha>.xyz" con la fecha actual.
@@ -91,12 +90,12 @@ void modificarPropiedad(FILE* propiedades){
 //simultaneamente elimina esos registros de "propiedades"
 //devuelve un puntero activo al archivo de bajas.
 FILE* bajaFisica(FILE* propiedades){
-
+    
 }
 
 //imprime los registros de bajasXyz con el formato correspondiente.
 void listarXyz(FILE* bajasXyz){
-
+    
 }
 
 int main(){
@@ -131,8 +130,8 @@ int main(){
                 exit(0);
             default:
                 printf("poneme una letra válida flaco");
-
-        }
+                
+        }   
     }
     return 0;
 }
