@@ -1,0 +1,8 @@
+ejemplo binario
+ID;FECHAINGRESO;ZONA;CIUDAD/BARRIO;DORMITORIOS;BAÑOS;SUP.TOTAL;SUP.CUBIERTA;PRECIO;MONEDA;TIPO;OPERACION;FECHASALIDA;ACTIVO
+1;22012001;Capital Federal;San Cristobal;7;2;140.0;140.0;153000.0;USD;Departamento;Venta;06022020;1\n
+1;22012001;Capital Federal;San Cristobal;7;2;140.0;140.0;153000.0;USD;Departamento;Venta;06022020;1\n
+1;22012001;Capital Federal;San Cristobal;7;2;140.0;140.0;153000.0;USD;Departamento;Venta;06022020;1\n
+1;22012001;Capital Federal;San Cristobal;7;2;140.0;140.0;153000.0;USD;Departamento;Venta;06022020;1\n
+1;22012001;Capital Federal;San Cristobal;7;2;140.0;140.0;153000.0;USD;Departamento;Venta;06022020;1\n
+1;22012001;Capital Federal;San Cristobal;7;2;140.0;140.0;153000.0;USD;Departamento;Venta;06022020;1\n
