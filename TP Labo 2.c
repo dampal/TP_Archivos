@@ -157,8 +157,8 @@ void altaPropiedad(FILE* propiedades){
         printf("Opci%dn inv%dlida. Por favor, ingrese una zona v%dlida: ", 162,160, 160);
         scanf(" %s", letra);
     }
-    //CHEQUEAR QUE ESTE USADA BIEN LA FUNCION
-    propiedad_n.zona = validarMayus(letra);
+    validarMayus(letra);
+    strcpy(propiedad_n.zona, letra);
 
     printf ("Ingrese la ciudad/barrio de la propiedad: ");
     scanf (" %s", letra);
@@ -166,8 +166,8 @@ void altaPropiedad(FILE* propiedades){
         printf("Opci%dn inv%dlida. Por favor, ingrese una ciudad/barrio v%dlida: ", 162,160, 160);
         scanf(" %s", letra);
     }
-    //CHEQUEAR QUE ESTE USADA BIEN LA FUNCION
-    propiedad_n.ciudad_barrio = validarMayus(letra);
+    validarMayus(letra);
+    strcpy(propiedad_n.ciudad_barrio, letra);
 
     printf ("Ingrese la cantidad de dormitorios de la propiedad: ");
     scanf (" %s", num);
