@@ -152,7 +152,7 @@ int main(){
     FILE* bajasXyz = NULL;
     while(1){
         mostrarMenu();
-        char input = ingresarOpcion();
+        char input = getchar();
         switch (input) {
             case 'a':
                 listarDat(propiedades);
@@ -178,10 +178,10 @@ int main(){
             case 'h':
             //cerrar el archivo y salir del programa
                 fclose (propiedades);
-                printf("Gracias por confiar en Inmobiliaria Bubú\n");
+                printf("Gracias por confiar en Inmobiliaria Bubu\n");
                 exit(0);
             default:
-                printf("Opci%dn inv%dlida. Int%dntelo de nuevo.\n", 162, 160, 130);
+                printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
         }   
     }
     return 0;
