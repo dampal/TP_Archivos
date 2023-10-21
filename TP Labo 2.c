@@ -76,30 +76,26 @@ void buscarPropiedad(FILE* propiedades){
     printf ("Seleccione m%ctodo de b%csqueda:\n\n",130,163);
     printf ("[a]. B%csqueda por ID\n",163);
     printf ("[b]. B%csqueda por Operaci%cn\n",163,162);
-    scanf (" %c",&subopcion);
 
-    subopcion = tolower(subopcion);
-
-
-    while (subopcion != 'a' && subopcion != 'b'){
-        printf("La opci%cn es incorrecta, ingrese otra opci%cn.\n",162,162);
+    do{
         scanf (" %c",&subopcion);
-        }
+        subopcion = tolower(subopcion);
+
+        if (subopcion != 'a' && subopcion != 'b')
+            printf("La opci%cn es incorrecta, ingrese otra opci%cn.\n",162,162);
+
+    } while (subopcion != 'a' && subopcion != 'b');
 
 
     switch (subopcion){
         case 'a':
-            buscarPorID(propiedades);
+            //buscarPorID(propiedades);
             break;
         case 'b':
-            buscarPorOp(propiedades);
+            //buscarPorOp(propiedades);
             break;
 
     }
-
-
-
-
 
 
     //aca mostramos menu y pedimos opciones
