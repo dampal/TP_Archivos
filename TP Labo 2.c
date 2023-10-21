@@ -17,10 +17,10 @@ typedef struct Propiedad {
     float superficie_total;
     float superficie_cubierta;
     float precio;
-    -char moneda[10];
-    -char tipo_propiedad[30];
-    -char operacion[30];
-    //fecha de salida y 
+    char moneda[6];
+    char tipo_propiedad[30];
+    char operacion[30];
+    //fecha de salida 
     int flag_activo;
 } propiedad_n
 
@@ -101,38 +101,100 @@ char ingresarOpcion(){
 }
 
 //(PUNTO 6) Alta de una propiedad
+//(PUNTO 3) Validacion de los datos ingresados
 /*inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
 valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
 llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.*/
+int ingresoID(char num[]) {
+    printf("Ingrese el ID de la propiedad: ");
+    scanf("%s", num);
+
+    while (!validarInt(num)) {
+        printf("Opción inválida. Por favor, ingrese un número entero: ");
+        scanf(" %s", num);
+    }
+    return atoi(num); 
+}
+char* elegirMoneda(){
+    char opcion, moneda[6];
+    printf("Mondea de la propiedad:\n[A]. ARS\n[U]. USD\n");
+    printf ("Seleccione el tipo de moneda: ");
+    scanf (" %c", &opcion);
+    opcion = tolower (opcion);
+    while (opcion != 'a' && opcion !='u'){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una opci%dn v%dlida (A/U): ", 162,160,162,160);
+        scanf(" %c", &opcion);
+        opcion = tolower (opcion);
+    }
+    if (opcion == 'a'){
+        strcpy (moneda, "PESOS");
+    } else {
+        strcpy (moneda, "USD");
+    }
+    return moneda;
+}
+char* elegirPropiedad() { 
+    char opcion, prop[15];
+    printf("Tipo de propiedad:\n[C]. Casa\n[D]. Departamento\n[P]. PH\n");
+    printf ("Seleccione el tipo de propiedad: ");
+    scanf (" %c", &opcion);
+    opcion = tolower (opcion);
+    while (opcion != 'c' && opcion !='d' && opcion !='p'){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una opci%dn v%dlida (C/D/P): ", 162,160,162,160);
+        scanf(" %c", &opcion);
+        opcion = tolower (opcion);
+    }
+    if (opcion == 'c'){
+        strcpy (prop, "Casa");
+    } else if (opcion == 'd') {
+        strcpy (prop, "Departamento");
+    } else {
+        strcpy (prop, "PH");
+    }
+    return prop;
+}
+char* elegirOperacion() {
+    char opcion, operacion[20];
+    printf("Tipo de operacion:\n[V]. Venta\n[A]. Alquiler\n[T]. Alquiler Temporal\n");
+    printf ("Seleccione el tipo de propiedad: ");
+    scanf (" %c", &opcion);
+    opcion = tolower (opcion);
+    while (opcion != 'a' && opcion !='v' && opcion !='t'){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una opci%dn v%dlida (V/A/T): ", 162,160,162,160);
+        scanf(" %c", &opcion);
+        opcion = tolower (opcion);
+    }
+    if (opcion == 'v'){
+        strcpy (operacion, "Venta");
+    } else if (opcion == 'a') {
+        strcpy (operacion, "Alquiler");
+    } else {
+        strcpy (prop, "Alquiler temporal");
+    }
+    return operacion;
+}
+
 void altaPropiedad(FILE* propiedades){
     char num[20], fecha[20], letra[20];
     propiedad_n;
-
-    printf ("Ingrese el ID de la propiedad: ");
-    scanf ("%s", num);
-
-    while (!validarInt (num)){
-        printf("Opci%dn inv%dlida. Por favor, ingrese un n%dmero entero: ", 162,160,163);
-        scanf(" %s", num);
-    }
-    int id = atoi(num);
-
-    //voy al final y obtengo la cantidad de propiedades que guarde
+    int id = ingresoID(num);
+    
+    //Verifico la ubicacion dentro del archivo segun el ID ingresado
     fseek(propiedades, 0, SEEK_END);
     int totalReg= ftell(propiedades) / sizeof(propiedad_n);
-    //veo que el id este dentro del total de propiedades
+    
     if (id <= totalReg){
         fseek (propiedades, (id-1)*sizeof (propiedad_n), SEEK_SET);
         propiedad_n dato;
         fread (&dato, sizeof(propiedad_n), 1, propiedades);
-        //veo si hay datos o no
+        //hay datos o no
         if (dato.id != 0){
             printf("La posici%dn %d ya est%d ocupada.\n", 162, id, 160);
-            //tengo que volver a pedir un nuevo id
+            altaPropiedad(propiedades);
         } else {
             propiedad_n.id=id;
         }
-    } else {
+    } else { //agrego propiedades con campos vacios hasta el id ingresado
         int filasInt = id - totalReg;
         propiedad_n vacio {0,'0','0','0',0,0,0,0,0,'0','0','0'}
         fseek(propiedades, 0, SEEK_END);
@@ -214,16 +276,21 @@ void altaPropiedad(FILE* propiedades){
     float precio = atoi(num);
     propiedad_n.superficie_total = precio;
 
-//FALTA MONEDA, PROPIEDAD Y OPERACION
+    char* moneda = elegirMoneda();
+    propiedad_n.moneda = moneda;
 
-    //guardo el nuevo struc en el lugar que corresponda
+    char* propiedad = elegirPropiedad();
+    propiedad_n.tipo_propiedad= propiedad;
+
+    char* operacion = elegirOperacion();
+    propiedad_n.operacion=operacion;
+
+    //Guardo el nuevo struc en el lugar que corresponda
     /*si todo esta ok, la propiedad queda activa*/
     propiedad_n.flag_activo=1;
     fseek (propiedades, (id-1)*sizeof(struct Propiedad), SEEK_SET);
     fwrite(&propiedad_n, sizeof(struct Propiedad), 1, propiedades);
     printf("Propiedad agregada exitosamente.\n");
-    
-    //Fecha de Salida
 }
 
 //busca una propiedad en el archivo segun ID.
