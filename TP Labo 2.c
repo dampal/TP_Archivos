@@ -223,19 +223,7 @@ void altaPropiedad(FILE* propiedades){
     fwrite(&propiedad_n, sizeof(struct Propiedad), 1, propiedades);
     printf("Propiedad agregada exitosamente.\n");
     
-
-    char ciudad_barrio [30] = validarTexto();
-    int dormitorios = validarNumero();
-    int baños = validarNumero();
-    float supTotal = validarNumero();
-    float supCubierta = validarNumero();
-    float precio = validarNumero();
-    char moneda = validarMoneda();
-    char propiedad = validarPropiedad();
-    char operacion = validarOperacion();
-
     //Fecha de Salida
-    //Activo
 }
 
 //busca una propiedad en el archivo segun ID.
