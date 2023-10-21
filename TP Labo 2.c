@@ -22,7 +22,7 @@ typedef struct Propiedad {
     char operacion[30];
     //fecha de salida 
     int flag_activo;
-} propiedad_n
+} propiedad_t
 
 //(PUNTO 4) Crea el archivo 'propiedades.dat'
 /*crea o sobreescribe el existente
@@ -51,7 +51,7 @@ FILE* crearDat(){
             printf ("Archivo abierto exitosamente.\n");
         } else {
             printf ("Opci%cn inv%alida.\n", 162,160);
-            exit (1;)
+            exit (1);
         }
         return propiedades;
     } while (tolower (opcion) != 's' || tolower (opcion) !='n');
@@ -176,33 +176,31 @@ char* elegirOperacion() {
 
 void altaPropiedad(FILE* propiedades){
     char num[20], fecha[20], letra[20];
-    propiedad_n;
-    int id = ingresoID(num);
-    
-    //Verifico la ubicacion dentro del archivo segun el ID ingresado
-    fseek(propiedades, 0, SEEK_END);
-    int totalReg= ftell(propiedades) / sizeof(propiedad_n);
-    
-    if (id <= totalReg){
-        fseek (propiedades, (id-1)*sizeof (propiedad_n), SEEK_SET);
-        propiedad_n dato;
-        fread (&dato, sizeof(propiedad_n), 1, propiedades);
-        //hay datos o no
-        if (dato.id != 0){
-            printf("La posici%cn %c ya est%c ocupada.\n", 162, id, 160);
-            altaPropiedad(propiedades);
-        } else {
-            propiedad_n.id=id;
-        }
-    } else { //agrego propiedades con campos vacios hasta el id ingresado
-        int filasInt = id - totalReg;
-        propiedad_n vacio {0,'0','0','0',0,0,0,0,0,'0','0','0'}
+    propiedad_t nuevo;
+    propiedad_t dato;
+    int id;
+    do {
+        id=ingresoID(num);
         fseek(propiedades, 0, SEEK_END);
-        for (int i=0; i < filasInt ; i++){
-            fwrite(&vacio, sizeof(propiedad_n),1,propiedades);
+        int totalReg= ftell(propiedades) / sizeof(propiedad_t);
+        if (id <= totalReg){ //si es mas chico existe, busco donde esta
+            fseek (propiedades, (id-1)*sizeof (propiedad_t), SEEK_SET);
+            fread (&dato, sizeof(propiedad_t), 1, propiedades);
+            if (dato.id !=0){
+                printf("La posici%cn %d ya est%c ocupada.\n", 162, id, 160);
+            } else {
+                nuevo.id = id;
+            }
+        } else {
+            int filasInt = id - totalReg;
+            propiedad_t vacio = {0,'0','0','0',0,0,0,0,0,'0','0','0'}
+            fseek(propiedades, 0, SEEK_END);
+            for (int i=0; i < filasInt ; i++){
+                fwrite(&vacio, sizeof(propiedad_t),1,propiedades);
+            }
+            nuevo.id=id;
         }
-        propiedad_n.id=id;
-    }
+    } while (dato.id !=0 && id <= totalReg);
 
     printf ("Ingrese la fecha actual: ");
     scanf ("%s", fecha);
@@ -211,7 +209,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %s", fecha);
     }
     //VERIFICAR SI ES LA REAL CON LA FECHA DE LA COMPU
-    propiedad_n.fecha_ingreso=fecha;
+    nuevo.fecha_ingreso=fecha;
 
     printf ("Ingrese la zona de la propiedad: ");
     scanf (" %s", letra);
@@ -220,7 +218,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %s", letra);
     }
     validarMayus(letra);
-    strcpy(propiedad_n.zona, letra);
+    strcpy(nuevo.zona, letra);
 
     printf ("Ingrese la ciudad/barrio de la propiedad: ");
     scanf (" %s", letra);
@@ -229,7 +227,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %s", letra);
     }
     validarMayus(letra);
-    strcpy(propiedad_n.ciudad_barrio, letra);
+    strcpy(nuevo.ciudad_barrio, letra);
 
     printf ("Ingrese la cantidad de dormitorios de la propiedad: ");
     scanf (" %s", num);
@@ -238,7 +236,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %s", num);
     }
     int dormi = atoi(num);
-    propiedad_n.dormitorios = dormi;
+    nuevo.dormitorios = dormi;
 
     printf ("Ingrese la cantidad de ba%cos de la propiedad: ",164);
     scanf (" %s", num);
@@ -247,7 +245,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %s", num);
     }
     int bano = atoi(num);
-    propiedad_n.dormitorios = bano;
+    nuevo.dormitorios = bano;
 
     printf ("Ingrese la superficie total de la propiedad: ");
     scanf (" %s", num);
@@ -256,7 +254,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %s", num);
     }
     float s_total = atoi(num);
-    propiedad_n.superficie_total = s_total;
+    nuevo.superficie_total = s_total;
 
     printf ("Ingrese la superficie cubierta de la propiedad: ");
     scanf (" %s", num);
@@ -265,7 +263,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %s", num);
     }
     float s_cub = atoi(num);
-    propiedad_n.superficie_total = s_cub;
+    nuevo.superficie_total = s_cub;
 
     printf ("Ingrese el valor de la propiedad: ");
     scanf (" %s", num);
@@ -274,22 +272,22 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %s", num);
     }
     float precio = atoi(num);
-    propiedad_n.superficie_total = precio;
+    nuevo.superficie_total = precio;
 
     char* moneda = elegirMoneda();
-    propiedad_n.moneda = moneda;
+    nuevo.moneda = moneda;
 
     char* propiedad = elegirPropiedad();
-    propiedad_n.tipo_propiedad= propiedad;
+    nuevo.tipo_propiedad= propiedad;
 
     char* operacion = elegirOperacion();
-    propiedad_n.operacion=operacion;
+    nuevo.operacion=operacion;
 
     //Guardo el nuevo struc en el lugar que corresponda
     /*si todo esta ok, la propiedad queda activa*/
-    propiedad_n.flag_activo=1;
+    nuevo.flag_activo=1;
     fseek (propiedades, (id-1)*sizeof(struct Propiedad), SEEK_SET);
-    fwrite(&propiedad_n, sizeof(struct Propiedad), 1, propiedades);
+    fwrite(&nuevo, sizeof(struct Propiedad), 1, propiedades);
     printf("Propiedad agregada exitosamente.\n");
 }
 
