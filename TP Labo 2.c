@@ -12,14 +12,14 @@
 //si la creacion es exitosa, devuelve un puntero activo al archivo.
 //si no, tira error y termina la ejecución del programa.
 FILE* crearDat(MAX_PROPIEDADES){
-    
+
 }
 
 //HOLAAAAAAAAAAAA
 
 //imprime una propiedad con el formato correspondiente.
 void imprimirPropiedad(FILE* propiedades){
-    
+
 }
 
 //impresion con formato del archivo de propiedades.
@@ -34,20 +34,20 @@ void listarDat(){
 
 //impresion con formato del menu principal.
 void mostrarMenu(){
-    
+
 }
 
 //pide una entrada al usuario y valida que sea un caracter ascii
 //si es valido, lo devuelve.
 char ingresarOpcion(){
-    
+
 }
 
 //inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
 //valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
 //llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.
 void altaPropiedad(FILE* propiedades){
-    
+
 }
 
 //busca una propiedad en el archivo segun ID.
@@ -55,15 +55,15 @@ void altaPropiedad(FILE* propiedades){
 //cambia el campo "activo" a cero.
 //NO ESTOY SEGURO DE QUE ESTO ES LO QUE QUIERA LA PROFE
 void bajaLogica(FILE* propiedades){
-    
+
 }
 
 buscarPorID(propiedades){
-    
+
 }
 
 buscarPorOp(propiedades){
-    
+
 }
 
 //muestra un submenu de opciones.
@@ -71,6 +71,37 @@ buscarPorOp(propiedades){
 //segun la entrada del usuario
 //emite los datos encontrados, o un mensaje si no se encuentra nada.
 void buscarPropiedad(FILE* propiedades){
+
+    char subopcion;
+    printf ("Seleccione m%ctodo de b%csqueda:\n\n",130,163);
+    printf ("[a]. B%csqueda por ID\n",163);
+    printf ("[b]. B%csqueda por Operaci%cn\n",163,162);
+    scanf (" %c",&subopcion);
+
+    subopcion = tolower(subopcion);
+
+
+    while (subopcion != 'a' && subopcion != 'b'){
+        printf("La opci%cn es incorrecta, ingrese otra opci%cn.\n",162,162);
+        scanf (" %c",&subopcion);
+        }
+
+
+    switch (subopcion){
+        case 'a':
+            buscarPorID(propiedades);
+            break;
+        case 'b':
+            buscarPorOp(propiedades);
+            break;
+
+    }
+
+
+
+
+
+
     //aca mostramos menu y pedimos opciones
     buscarPorID(propiedades);
     //o
@@ -82,7 +113,7 @@ void buscarPropiedad(FILE* propiedades){
 //siempre validando la entrada del usuario segun el campo modificado.
 //pide una confirmación antes de modificar el registro.
 void modificarPropiedad(FILE* propiedades){
-    
+
 }
 
 //crea un archivo "propiedades_bajas_<fecha>.xyz" con la fecha actual.
@@ -90,12 +121,12 @@ void modificarPropiedad(FILE* propiedades){
 //simultaneamente elimina esos registros de "propiedades"
 //devuelve un puntero activo al archivo de bajas.
 FILE* bajaFisica(FILE* propiedades){
-    
+
 }
 
 //imprime los registros de bajasXyz con el formato correspondiente.
 void listarXyz(FILE* bajasXyz){
-    
+
 }
 
 int main(){
@@ -130,8 +161,8 @@ int main(){
                 exit(0);
             default:
                 printf("poneme una letra válida flaco");
-                
-        }   
+
+        }
     }
     return 0;
 }
