@@ -7,9 +7,25 @@
 #include <ctype.h>
 #include "validaciones.h"
 
-//(PUNTO 4) Crea el archivo propiedades.dat
-//crea o sobreescribe el existente
-//si no, tira error y termina la ejecución del programa.
+typedef struct Propiedad {
+    int id;
+    char fecha_ingreso[30];
+    char zona[30];
+    char ciudad_barrio[30];
+    int dormitorios;
+    int banos;
+    float superficie_total;
+    float superficie_cubierta;
+    float precio;
+    char moneda[10];
+    char tipo_propiedad[30];
+    char operacion[30];
+    //fecha de salida y activo
+} propiedad_n
+
+//(PUNTO 4) Crea el archivo 'propiedades.dat'
+/*crea o sobreescribe el existente
+si no, tira error y termina la ejecución del programa.*/
 FILE* crearDat(){
     char opcion;
     do {
@@ -17,7 +33,7 @@ FILE* crearDat(){
         scanf("%c", &opcion);
 
         if (tolower (opcion) == 's'){
-            //crea/sobreescribe el archivo
+            //Crea/sobreescribe el archivo
             propiedades = fopen ("propiedades.dat", "w+b");
             if (propiedades == NULL){
                 printf ("Error en la apertura del archivo\n");
@@ -68,21 +84,70 @@ void mostrarMenu(){
     printf ("[h]. Salir.\n");
     ingresarOpcion();    
 }
-//pide una entrada al usuario y valida que sea un caracter ascii
-//si es valido, lo devuelve.
+/*pide una entrada al usuario y valida que sea un caracter ascii
+si es valido, lo devuelve.*/
 char ingresarOpcion(){
     char opcion;
     printf ("Ingrese su opcion: ");
     scanf (" %c", &opcion);
     opcion = tolower (opcion);
+    while (!validarOpcion(opcion)) {
+        printf("Opci%dn inv%dlida. Por favor, ingrese una opci%dn v%dlida (a-h): ", 162,160,162,160);
+        scanf(" %c", &opcion);
+        opcion = tolower(opcion);
+    }
     return opcion;
 }
 
-//inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
-//valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
-//llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.
+//(PUNTO 6) Alta de una propiedad
+/*inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
+valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
+llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.*/
 void altaPropiedad(FILE* propiedades){
-    int ID = validarID();
+    char IDaux[20];
+    propiedad_n;
+
+    printf ("Ingrese el ID de la propiedad: ");
+    scanf ("%s", IDaux);
+
+    while (!validarInt (IDaux)){
+        printf("Opci%dn inv%dlida. Por favor, ingrese un n%dmero entero: ", 162,160,163);
+        scanf(" %s", IDaux);
+    }
+    int id = atoi(IDaux);
+
+    //voy al final y obtengo la cantidad de propiedades que guarde
+    fseek(propiedades, 0, SEEK_END);
+    int totalReg= ftell(propiedades) / sizeof(propiedad_n);
+    //veo que el id este dentro del total de propiedades
+    if (id <= totalReg){
+        fseek (propiedades, (id-1)*sizeof (propiedad_n), SEEK_SET);
+        propiedad_n dato;
+        fread (&dato, sizeof(propiedad_n), 1, propiedades);
+        //veo si hay datos o no
+        if (dato.id != 0){
+            printf("La posici%dn %d ya est%d ocupada.\n", 162, id, 160);
+            //tengo que volver a pedir un nuevo id
+        } else {
+            propiedad_n.id=id;
+        }
+    } else {
+        int filasInt = id - totalReg;
+        propiedad_n vacio {0,'0','0','0',0,0,0,0,0,'0','0','0'}
+        fseek(propiedades, 0, SEEK_END);
+        for (int i=0; i < filasInt ; i++){
+            fwrite(&vacio, sizeof(propiedad_n),1,propiedades);
+        }
+        propiedad_n.id=id;
+    }
+
+
+    //guardo el nuevo struc en el lugar que corresponda
+    fseek (propiedades, (id-1)*sizeof(struct Propiedad), SEEK_SET);
+    fwrite(&propiedad_n, sizeof(struct Propiedad), 1, propiedades);
+    printf("Propiedad agregada exitosamente.\n");
+    
+
     int fechaIngreso = validarFecha();
     char zona [30] = validarTexto();
     char ciudad_barrio [30] = validarTexto();
@@ -178,7 +243,7 @@ int main(){
             case 'h':
             //cerrar el archivo y salir del programa
                 fclose (propiedades);
-                printf("Gracias por confiar en Inmobiliaria Bubú\n");
+                printf("Gracias por confiar en Inmobiliaria Bubú. Saliendo del programa...\n");
                 exit(0);
             default:
                 printf("Opci%dn inv%dlida. Int%dntelo de nuevo.\n", 162, 160, 130);
