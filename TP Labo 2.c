@@ -26,7 +26,7 @@ FILE* crearDat(){
             printf ("Archivo creado o sobrescrito exitosamente.\n");
         } else if (tolower (opcion) == 'n'){
             //Abrir el archivo existente
-            propiedades = fopen ("propiedades.dar", "rb+");
+            propiedades = fopen ("propiedades.dat", "rb+");
             if (propiedades == NULL){
                 printf ("Error en la apertura del archivo\n");
                 exit (1);
