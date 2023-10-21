@@ -17,10 +17,11 @@ typedef struct Propiedad {
     float superficie_total;
     float superficie_cubierta;
     float precio;
-    char moneda[10];
-    char tipo_propiedad[30];
-    char operacion[30];
-    //fecha de salida y activo
+    -char moneda[10];
+    -char tipo_propiedad[30];
+    -char operacion[30];
+    //fecha de salida y 
+    int flag_activo;
 } propiedad_n
 
 //(PUNTO 4) Crea el archivo 'propiedades.dat'
@@ -104,17 +105,17 @@ char ingresarOpcion(){
 valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
 llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.*/
 void altaPropiedad(FILE* propiedades){
-    char IDaux[20];
+    char num[20], fecha[20], letra[20];
     propiedad_n;
 
     printf ("Ingrese el ID de la propiedad: ");
-    scanf ("%s", IDaux);
+    scanf ("%s", num);
 
-    while (!validarInt (IDaux)){
+    while (!validarInt (num)){
         printf("Opci%dn inv%dlida. Por favor, ingrese un n%dmero entero: ", 162,160,163);
-        scanf(" %s", IDaux);
+        scanf(" %s", num);
     }
-    int id = atoi(IDaux);
+    int id = atoi(num);
 
     //voy al final y obtengo la cantidad de propiedades que guarde
     fseek(propiedades, 0, SEEK_END);
@@ -141,15 +142,88 @@ void altaPropiedad(FILE* propiedades){
         propiedad_n.id=id;
     }
 
+    printf ("Ingrese la fecha actual: ");
+    scanf ("%s", fecha);
+    while (!validarFecha (fecha)){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una fecha con formato DDMMYYYY: ", 162,160);
+        scanf(" %s", fecha);
+    }
+    //VERIFICAR SI ES LA REAL CON LA FECHA DE LA COMPU
+    propiedad_n.fecha_ingreso=fecha;
+
+    printf ("Ingrese la zona de la propiedad: ");
+    scanf (" %s", letra);
+    while (!validarTexto(letra)){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una zona v%dlida: ", 162,160, 160);
+        scanf(" %s", letra);
+    }
+    //CHEQUEAR QUE ESTE USADA BIEN LA FUNCION
+    propiedad_n.zona = validarMayus(letra);
+
+    printf ("Ingrese la ciudad/barrio de la propiedad: ");
+    scanf (" %s", letra);
+    while (!validarTexto(letra)){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una ciudad/barrio v%dlida: ", 162,160, 160);
+        scanf(" %s", letra);
+    }
+    //CHEQUEAR QUE ESTE USADA BIEN LA FUNCION
+    propiedad_n.ciudad_barrio = validarMayus(letra);
+
+    printf ("Ingrese la cantidad de dormitorios de la propiedad: ");
+    scanf (" %s", num);
+    while (!validarInt (num)){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una cantidad v%dlida: ", 162,160, 160);
+        scanf(" %s", num);
+    }
+    int dormi = atoi(num);
+    propiedad_n.dormitorios = dormi;
+
+    printf ("Ingrese la cantidad de ba%dos de la propiedad: ",164);
+    scanf (" %s", num);
+    while (!validarInt (num)){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una cantidad v%dlida: ", 162,160, 160);
+        scanf(" %s", num);
+    }
+    int bano = atoi(num);
+    propiedad_n.dormitorios = bano;
+
+    printf ("Ingrese la superficie total de la propiedad: ");
+    scanf (" %s", num);
+    while (!validarFloat (num)){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una superficie v%dlida(agregando '.'): ", 162,160, 160);
+        scanf(" %s", num);
+    }
+    float s_total = atoi(num);
+    propiedad_n.superficie_total = s_total;
+
+    printf ("Ingrese la superficie cubierta de la propiedad: ");
+    scanf (" %s", num);
+    while (!validarFloat (num)){
+        printf("Opci%dn inv%dlida. Por favor, ingrese una superficie v%dlida(agregando '.'): ", 162,160, 160);
+        scanf(" %s", num);
+    }
+    float s_cub = atoi(num);
+    propiedad_n.superficie_total = s_cub;
+
+    printf ("Ingrese el valor de la propiedad: ");
+    scanf (" %s", num);
+    while (!validarFloat (num)){
+        printf("Opci%dn inv%dlida. Por favor, ingrese un valor v%dlida(agregando '.'): ", 162,160, 160);
+        scanf(" %s", num);
+    }
+    float precio = atoi(num);
+    propiedad_n.superficie_total = precio;
+
+//FALTA MONEDA, PROPIEDAD Y OPERACION
 
     //guardo el nuevo struc en el lugar que corresponda
+    /*si todo esta ok, la propiedad queda activa*/
+    propiedad_n.flag_activo=1;
     fseek (propiedades, (id-1)*sizeof(struct Propiedad), SEEK_SET);
     fwrite(&propiedad_n, sizeof(struct Propiedad), 1, propiedades);
     printf("Propiedad agregada exitosamente.\n");
     
 
-    int fechaIngreso = validarFecha();
-    char zona [30] = validarTexto();
     char ciudad_barrio [30] = validarTexto();
     int dormitorios = validarNumero();
     int baños = validarNumero();
