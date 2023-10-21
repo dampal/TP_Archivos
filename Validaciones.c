@@ -1,8 +1,6 @@
 //Desarollo de las funciones propias para la libreria 'validaciones.h'
 
-/*Si con el número de id ingresado existe un registro de datos cargado,
-se debe emitir un mensaje de error y pedir un nuevo número de id.
-El acceso de comprobación debe ser directo.*/
+
 int validarInt (char num[]){
     for(int i=0; i<strlen(num); i++){
         if(!isdigit(num[i])){
