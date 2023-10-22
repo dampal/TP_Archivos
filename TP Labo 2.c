@@ -33,7 +33,7 @@ FILE* crearDat(){
             }
             printf ("Archivo abierto exitosamente.\n");
         } else {
-            printf ("Opci%dn inv%alida.\n", 162,160);
+            printf ("Opci%cn inv%clida.\n", 162,160);
             exit (1;)
         }
         return propiedades;
@@ -66,37 +66,14 @@ void mostrarMenu(){
     printf ("[f]. Baja fisica de una propiedad.\n");
     printf ("[g]. Listar baja fisica de propiedades.\n");
     printf ("[h]. Salir.\n");
-    ingresarOpcion();    
-}
-//pide una entrada al usuario y valida que sea un caracter ascii
-//si es valido, lo devuelve.
-char ingresarOpcion(){
-    char opcion;
-    printf ("Ingrese su opcion: ");
-    scanf (" %c", &opcion);
-    opcion = tolower (opcion);
-    return opcion;
+    
 }
 
 //inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
 //valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
 //llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.
 void altaPropiedad(FILE* propiedades){
-    int ID = validarID();
-    int fechaIngreso = validarFecha();
-    char zona [30] = validarTexto();
-    char ciudad_barrio [30] = validarTexto();
-    int dormitorios = validarNumero();
-    int baños = validarNumero();
-    float supTotal = validarNumero();
-    float supCubierta = validarNumero();
-    float precio = validarNumero();
-    char moneda = validarMoneda();
-    char propiedad = validarPropiedad();
-    char operacion = validarOperacion();
-
-    //Fecha de Salida
-    //Activo
+    //esperando a sol
 }
 
 //busca una propiedad en el archivo segun ID.
@@ -104,15 +81,15 @@ void altaPropiedad(FILE* propiedades){
 //cambia el campo "activo" a cero.
 //NO ESTOY SEGURO DE QUE ESTO ES LO QUE QUIERA LA PROFE
 void bajaLogica(FILE* propiedades){
-    
+    //franco???
 }
 
 buscarPorID(propiedades){
-    
+    //franco
 }
 
 buscarPorOp(propiedades){
-    
+    //franco
 }
 
 //muestra un submenu de opciones.
