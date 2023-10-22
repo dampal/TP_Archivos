@@ -60,6 +60,41 @@ void bajaLogica(FILE* propiedades){
 
 buscarPorID(propiedades){
 
+    int nReg,aux;
+    char = id[6];
+
+    propiedad_n busqueda;
+
+    do{
+        printf ("Ingrese el ID a buscar\n");
+        scanf (" %s",id);
+
+        if (validarInt(id) == 0){
+            printf("Error, ingrese otro ID\n");
+        }
+
+    } while (validarInt(id) == 0);
+
+    aux = atoi(id);
+
+    fseek(propiedades,0,SEEK_END);
+    nReg=ftell(propiedades)/sizeof(propiedad_n);
+
+    if (id <= nReg){
+        fseek(propiedades,(aux-1)*sizeof(propiedad_n),SEEK_SET);
+
+        fread(&busqueda,sizeof(propiedad_n),1,propiedades);
+
+        if (busqueda.id == aux){
+            imprimirRegistro(busqueda)
+        } else {
+            printf ("Error, el registro est%c vac%co\n",131,161);}
+
+
+
+    } else {
+    printf ("Error, no existe el ID ingresado\n");}
+
 }
 
 buscarPorOp(propiedades){
