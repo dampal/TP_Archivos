@@ -99,6 +99,37 @@ buscarPorID(propiedades){
 
 buscarPorOp(propiedades){
 
+    char * popcion = elegirOperacion();
+
+    char tipoOperacion[50];
+    char tipoPropiedad[50];
+    printf("Ingrese el tipo de operación (Venta, Alquiler, Alquiler temporal): ");
+    scanf("%s", tipoOperacion);
+    printf("Ingrese el tipo de propiedad (PH, Departamento, Casa, ...): ");
+    scanf("%s", tipoPropiedad);
+
+    struct propiedad filtro;
+    fseek(propiedades,0,SEEK_SET);
+
+
+    printf ("Filtro por Operaci%cn\n",162);
+    while (fread(&filtro, sizeof(struct filtro), 1, archivo) == 1) {
+        if (strcmp(filtro.operacion, tipoOperacion) == 0) {
+            imprimirRegistro(filtro);
+        }
+    }
+
+    fseek(pArchivo,0,SEEK_SET);
+
+    printf ("Filtro por Operaci%cn y por Propiedad\n",162);
+    while (fread(&filtro, sizeof(struct filtro), 1, archivo) == 1) {
+        if (strcmp(filtro.operacion, tipoOperacion) == 0 && strcmp(filtro.tipoPropiedad, tipoPropiedad) == 0) {
+            imprimirRegistro(filtro);
+        }
+    }
+
+
+
 }
 
 //muestra un submenu de opciones.
@@ -124,10 +155,10 @@ void buscarPropiedad(FILE* propiedades){
 
     switch (subopcion){
         case 'a':
-            //buscarPorID(propiedades);
+            buscarPorID(propiedades);
             break;
         case 'b':
-            //buscarPorOp(propiedades);
+            buscarPorOp(propiedades);
             break;
 
     }
