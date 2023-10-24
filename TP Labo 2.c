@@ -1,21 +1,62 @@
-//cambio cambio 123
-
 #define FILENAME "propiedades.dat"
 
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include "validaciones.h"
 
-//Crea el archivo propiedades.dat
-//si la creacion es exitosa, devuelve un puntero activo al archivo.
-//si no, tira error y termina la ejecución del programa.
-FILE* crearDat(MAX_PROPIEDADES){
+typedef struct Propiedad {
+    int id;
+    char fecha_ingreso[30];
+    char zona[30];
+    char ciudad_barrio[30];
+    int dormitorios;
+    int banos;
+    float superficie_total;
+    float superficie_cubierta;
+    float precio;
+    char moneda[6];
+    char tipo_propiedad[30];
+    char operacion[30];
+    //fecha de salida 
+    int flag_activo;
+} propiedad_t
 
+//(PUNTO 4) Crea el archivo 'propiedades.dat'
+/*crea o sobreescribe el existente
+si no, tira error y termina la ejecución del programa.*/
+FILE* crearDat(){
+    char opcion;
+    do {
+        printf ("¿Desea crear un nuevo archivo o sobrescribirlo?(S/N): ");
+        scanf("%c", &opcion);
+
+        if (tolower (opcion) == 's'){
+            //Crea/sobreescribe el archivo
+            propiedades = fopen ("propiedades.dat", "w+b");
+            if (propiedades == NULL){
+                printf ("Error en la apertura del archivo\n");
+                exit (1);
+            }
+            printf ("Archivo creado o sobrescrito exitosamente.\n");
+        } else if (tolower (opcion) == 'n'){
+            //Abrir el archivo existente
+            propiedades = fopen ("propiedades.dat", "rb+");
+            if (propiedades == NULL){
+                printf ("Error en la apertura del archivo\n");
+                exit (1);
+            }
+            printf ("Archivo abierto exitosamente.\n");
+        } else {
+            printf ("Opci%cn inv%clida.\n", 162,160);
+            printf ("Opci%cn inv%alida.\n", 162,160);
+            exit (1);
+        }
+        return propiedades;
+    } while (tolower (opcion) != 's' || tolower (opcion) !='n');
 }
-
-//HOLAAAAAAAAAAAA
 
 //imprime una propiedad con el formato correspondiente.
 void imprimirPropiedad(FILE* propiedades){
@@ -32,22 +73,198 @@ void listarDat(){
     //4. un rango de tiempo (min, max)
 }
 
-//impresion con formato del menu principal.
+//(PUNTO 1) Impresion con formato del menu principal.
 void mostrarMenu(){
-
+    printf ("--------Menú Inicial--------\n");
+    printf ("[a]. Listar propiedades.\n");
+    printf ("[b]. Alta de una propiedad.\n");
+    printf ("[c]. Buscar propiedad.\n");
+    printf ("[d]. Modificar propiedades.\n");
+    printf ("[e]. Baja logica de una propiedad.\n");
+    printf ("[f]. Baja fisica de una propiedad.\n");
+    printf ("[g]. Listar baja fisica de propiedades.\n");
+    printf ("[h]. Salir.\n");
+    
 }
 
-//pide una entrada al usuario y valida que sea un caracter ascii
-//si es valido, lo devuelve.
-char ingresarOpcion(){
-
+//(PUNTO 3) Validacion de los datos ingresados
+/*inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
+valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
+llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.*/
+int ingresoID(char num[]) {
+    printf("Ingrese el ID de la propiedad: ");
+    scanf("%5s", num);
+    while (!validarInt(num)) {
+        printf("Opción inválida. Por favor, ingrese un número entero: ");
+        scanf(" %5s", num);
+    }
+    return atoi(num); 
+}
+void elegirMoneda(propiedad_t propiedad){
+    char opcion;
+    printf("Moneda de la propiedad:\n[A]. ARS\n[U]. USD\n");
+    printf ("Seleccione el tipo de moneda: ");
+    scanf (" %c", &opcion);
+    opcion = tolower (opcion);
+    while (opcion != 'a' && opcion !='u'){
+        printf("Opci%cn inv%clida. Por favor, ingrese una opci%cn v%clida (A/U): ", 162,160,162,160);
+        scanf(" %c", &opcion);
+        opcion = tolower (opcion);
+    }
+    if (opcion == 'a'){
+        strcpy (nuevo.moneda, "PESOS");
+    } else {
+        strcpy (nuevo.moneda, "USD");
+    }
+}
+void elegirPropiedad(propiedad_t propiedad) { 
+    char opcion;
+    printf("Tipo de propiedad:\n[C]. Casa\n[D]. Departamento\n[P]. PH\n");
+    printf ("Seleccione el tipo de propiedad: ");
+    scanf (" %c", &opcion);
+    opcion = tolower (opcion);
+    while (opcion != 'c' && opcion !='d' && opcion !='p'){
+        printf("Opci%cn inv%clida. Por favor, ingrese una opci%cn v%clida (C/D/P): ", 162,160,162,160);
+        scanf(" %c", &opcion);
+        opcion = tolower (opcion);
+    }
+    if (opcion == 'c'){
+        strcpy (propiedad.tipo_propiedad, "Casa");
+    } else if (opcion == 'd') {
+        strcpy (propiedad.tipo_propiedad, "Departamento");
+    } else {
+        strcpy (propiedad.tipo_propiedad, "PH");
+    }
+}
+void elegirOperacion(propiedad_t propiedad) {
+    char opcion;
+    printf("Tipo de operacion:\n[V]. Venta\n[A]. Alquiler\n[T]. Alquiler Temporal\n");
+    printf ("Seleccione el tipo de propiedad: ");
+    scanf (" %c", &opcion);
+    opcion = tolower (opcion);
+    while (opcion != 'a' && opcion !='v' && opcion !='t'){
+        printf("Opci%cn inv%clida. Por favor, ingrese una opci%cn v%clida (V/A/T): ", 162,160,162,160);
+        scanf(" %c", &opcion);
+        opcion = tolower (opcion);
+    }
+    if (opcion == 'v'){
+        strcpy (propiedad.operacion, "Venta");
+    } else if (opcion == 'a') {
+        strcpy (propiedad.operacion, "Alquiler");
+    } else {
+        strcpy (propiedad.operacion, "Alquiler temporal");
+    }
 }
 
-//inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
-//valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
-//llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.
 void altaPropiedad(FILE* propiedades){
+    char num[20], fecha[9], letra[20];
+    propiedad_t nuevo;
+    propiedad_t dato;
+    int id;
+    do {
+        id=ingresoID(num);
+        fseek(propiedades, 0, SEEK_END);
+        int totalReg = ftell(propiedades) / sizeof(propiedad_t);
+        if (id <= totalReg){ //si es mas chico existe, busco donde esta
+            fseek (propiedades, (id-1)*sizeof (propiedad_t), SEEK_SET);
+            fread (&dato, sizeof(propiedad_t), 1, propiedades);
+            if (dato.id !=0){
+                printf("La posici%cn %d ya est%c ocupada.\n", 162, id, 160);
+            } else { //q hago si el activo esta en 0?????????
+                nuevo.id = id;
+            }
+        } else {
+            int filasInt = id - totalReg;
+            propiedad_t vacio = {0,'0','0','0',0,0,0,0,0,'0','0','0'}
+            fseek(propiedades, 0, SEEK_END);
+            for (int i=0; i < filasInt ; i++){
+                fwrite(&vacio, sizeof(propiedad_t),1,propiedades);
+            }
+            nuevo.id=id;
+        }
+    } while (dato.id !=0 && id <= totalReg);
 
+    printf ("Ingrese la fecha actual: ");
+    scanf ("%8s", fecha);
+    while (!validarFecha (fecha)){
+        printf("Opci%cn inv%clida. Por favor, ingrese una fecha con formato DDMMYYYY: ", 162,160);
+        scanf(" %8s", fecha);
+    }
+    //VERIFICAR SI ES LA REAL CON LA FECHA DE LA COMPU
+    nuevo.fecha_ingreso = fecha;
+
+    printf ("Ingrese la zona de la propiedad: ");
+    scanf (" %19s", letra);
+    while (!validarTexto(letra)){
+        printf("Opci%cn inv%clida. Por favor, ingrese una zona v%clida: ", 162,160, 160);
+        scanf(" %19s", letra);
+    }
+    validarMayus(letra);
+    strcpy(nuevo.zona, letra);
+
+    printf ("Ingrese la ciudad/barrio de la propiedad: ");
+    scanf (" %19s", letra);
+    while (!validarTexto(letra)){
+        printf("Opci%cn inv%clida. Por favor, ingrese una ciudad/barrio v%clida: ", 162,160, 160);
+        scanf(" %19s", letra);
+    }
+    validarMayus(letra);
+    strcpy(nuevo.ciudad_barrio, letra);
+
+    printf ("Ingrese la cantidad de dormitorios de la propiedad: ");
+    scanf (" %19s", num);
+    while (!validarInt (num)){
+        printf("Opci%cn inv%clida. Por favor, ingrese una cantidad v%clida: ", 162,160, 160);
+        scanf(" %19s", num);
+    }
+    int dormi = atoi(num);
+    nuevo.dormitorios = dormi;
+
+    printf ("Ingrese la cantidad de ba%cos de la propiedad: ",164);
+    scanf (" %19s", num);
+    while (!validarInt (num)){
+        printf("Opci%cn inv%clida. Por favor, ingrese una cantidad v%clida: ", 162,160, 160);
+        scanf(" %19s", num);
+    }
+    int bano = atoi(num);
+    nuevo.dormitorios = bano;
+
+    printf ("Ingrese la superficie total de la propiedad: ");
+    scanf (" %19s", num);
+    while (!validarFloat (num)){
+        printf("Opci%cn inv%clida. Por favor, ingrese una superficie v%clida(agregando '.'): ", 162,160, 160);
+        scanf(" %19s", num);
+    }
+    float s_total = atof(num);
+    nuevo.superficie_total = s_total;
+
+    printf ("Ingrese la superficie cubierta de la propiedad: ");
+    scanf (" %19s", num);
+    while (!validarFloat (num)){
+        printf("Opci%cn inv%clida. Por favor, ingrese una superficie v%clida(agregando '.'): ", 162,160, 160);
+        scanf(" %19s", num);
+    }
+    float s_cub = atof(num);
+    nuevo.superficie_total = s_cub;
+
+    printf ("Ingrese el valor de la propiedad: ");
+    scanf (" %19s", num);
+    while (!validarFloat (num)){
+        printf("Opci%cn inv%clida. Por favor, ingrese un valor v%clida(agregando '.'): ", 162,160, 160);
+        scanf(" %19s", num);
+    }
+    float precio = atof(num);
+    nuevo.superficie_total = precio;
+    elegirMoneda(nuevo);
+    elegirPropiedad(nuevo);
+	elegirOperacion(nuevo);
+
+    //Guardo el nuevo struct en el lugar que corresponda
+    /*si todo esta ok, la propiedad queda activa*/
+    nuevo.flag_activo=1;
+    fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
+    fwrite(&nuevo, sizeof(propiedad_t), 1, propiedades);
+    printf("Propiedad agregada exitosamente.\n");
 }
 
 //busca una propiedad en el archivo segun ID.
@@ -130,6 +347,15 @@ buscarPorOp(propiedades){
 
 
 
+    //franco???
+}
+
+buscarPorID(propiedades){
+    //franco
+}
+
+buscarPorOp(propiedades){
+    //franco
 }
 
 //muestra un submenu de opciones.
@@ -170,9 +396,10 @@ void buscarPropiedad(FILE* propiedades){
     buscarPorOp(propiedades);
 }
 
+//(PUNTO 8) Modificar datos
 //muestra un submenu con opciones.
-//modifica ciudad, barrio, precio, o fecha de salida.
-//siempre validando la entrada del usuario segun el campo modificado.
+//modifica ciudad/barrio, precio, o fecha de salida->(validar fecha y tambien modificar la baja logica).
+//siempre validando la entrada del usuario (con id) segun el campo modificado.
 //pide una confirmación antes de modificar el registro.
 void modificarPropiedad(FILE* propiedades){
 
@@ -196,8 +423,8 @@ int main(){
     FILE* bajasXyz = NULL;
     while(1){
         mostrarMenu();
-        char input = ingresarOpcion();
-        switch input{
+        char input = getchar();
+        switch (input) {
             case 'a':
                 listarDat(propiedades);
                 break;
@@ -220,11 +447,13 @@ int main(){
                 listarXyz(bajasXyz);
                 break;
             case 'h':
+            //cerrar el archivo y salir del programa
+                fclose (propiedades);
+                printf("Gracias por confiar en Inmobiliaria Bubú. Saliendo del programa...\n");
                 exit(0);
             default:
-                printf("poneme una letra válida flaco");
-
-        }
+                printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
+        }   
     }
     return 0;
 }
