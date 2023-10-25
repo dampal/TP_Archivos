@@ -41,6 +41,7 @@ FILE* crearDat(){
                 exit (1);
             }
             printf ("Archivo creado o sobrescrito exitosamente.\n");
+            return propiedades;
         } else if (tolower (opcion) == 'n'){
             //Abrir el archivo existente
             propiedades = fopen ("propiedades.dat", "rb+");
@@ -49,12 +50,10 @@ FILE* crearDat(){
                 exit (1);
             }
             printf ("Archivo abierto exitosamente.\n");
+            return propiedades;
         } else {
             printf ("Opci%cn inv%clida.\n", 162,160);
-            printf ("Opci%cn inv%alida.\n", 162,160);
-            exit (1);
         }
-        return propiedades;
     } while (tolower (opcion) != 's' || tolower (opcion) !='n');
 }
 
