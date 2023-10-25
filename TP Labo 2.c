@@ -20,7 +20,7 @@ typedef struct Propiedad {
     char moneda[6];
     char tipo_propiedad[30];
     char operacion[30];
-    //fecha de salida 
+    //fecha de salida
     int flag_activo;
 } propiedad_t
 
@@ -84,7 +84,7 @@ void mostrarMenu(){
     printf ("[f]. Baja fisica de una propiedad.\n");
     printf ("[g]. Listar baja fisica de propiedades.\n");
     printf ("[h]. Salir.\n");
-    
+
 }
 
 //(PUNTO 3) Validacion de los datos ingresados
@@ -98,7 +98,7 @@ int ingresoID(char num[]) {
         printf("Opción inválida. Por favor, ingrese un número entero: ");
         scanf(" %5s", num);
     }
-    return atoi(num); 
+    return atoi(num);
 }
 void elegirMoneda(propiedad_t propiedad){
     char opcion;
@@ -117,7 +117,7 @@ void elegirMoneda(propiedad_t propiedad){
         strcpy (nuevo.moneda, "USD");
     }
 }
-void elegirPropiedad(propiedad_t propiedad) { 
+void elegirPropiedad(propiedad_t propiedad) {
     char opcion;
     printf("Tipo de propiedad:\n[C]. Casa\n[D]. Departamento\n[P]. PH\n");
     printf ("Seleccione el tipo de propiedad: ");
@@ -316,38 +316,31 @@ buscarPorID(propiedades){
 
 buscarPorOp(propiedades){
 
-    char * popcion = elegirOperacion();
 
-    char tipoOperacion[50];
-    char tipoPropiedad[50];
-    printf("Ingrese el tipo de operación (Venta, Alquiler, Alquiler temporal): ");
-    scanf("%s", tipoOperacion);
-    printf("Ingrese el tipo de propiedad (PH, Departamento, Casa, ...): ");
-    scanf("%s", tipoPropiedad);
+    propiedad_t regBuscar,regArchivo;
+    elegirOperacion(regBuscar);
+    fseek(propiedades,0,SEEK_SET);
 
-    struct propiedad filtro;
+    printf ("Filtro por Operaci%cn\n",162);
+    while (fread(&regArchivo, sizeof(propiedad_t), 1, propiedades) == 1) {
+        if (strcmp(regBuscar.operacion, regArchivo.operacion) == 0) {
+            imprimirRegistro(regArchivo);
+        }
+    }
+
+
+    elegirPropiedad(regBuscar);
     fseek(propiedades,0,SEEK_SET);
 
 
-    printf ("Filtro por Operaci%cn\n",162);
-    while (fread(&filtro, sizeof(struct filtro), 1, archivo) == 1) {
-        if (strcmp(filtro.operacion, tipoOperacion) == 0) {
-            imprimirRegistro(filtro);
-        }
-    }
-
-    fseek(pArchivo,0,SEEK_SET);
-
     printf ("Filtro por Operaci%cn y por Propiedad\n",162);
-    while (fread(&filtro, sizeof(struct filtro), 1, archivo) == 1) {
-        if (strcmp(filtro.operacion, tipoOperacion) == 0 && strcmp(filtro.tipoPropiedad, tipoPropiedad) == 0) {
-            imprimirRegistro(filtro);
+    while (fread(&regArchivo, sizeof(propiedad_t), 1, propiedades) == 1) {
+        if (strcmp(regBuscar.operacion, regArchivo.operacion) == 0 && strcmp(regBuscar.tipo_propiedad, regArchivo.tipo_propiedad) == 0) {
+            imprimirRegistro(regArchivo);
         }
     }
 
 
-
-    //franco???
 }
 
 buscarPorID(propiedades){
@@ -453,7 +446,7 @@ int main(){
                 exit(0);
             default:
                 printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
-        }   
+        }
     }
     return 0;
 }
