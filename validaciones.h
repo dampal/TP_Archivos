@@ -12,6 +12,9 @@ int validarInt(char id[]);
 
 int validarFloat(char flotante[])
 
+//Recibe un string que contiene una fecha en formato DDMMYYYY
+//chequea si esa fecha es una fecha válida, teniendo en cuenta cantidad de dias por mes y años bisiestos.
+//devuelve 1 si es válida, 0 si no lo es.
 int validarFecha(char fecha[]);
 
 int validarTexto (char texto[]);
