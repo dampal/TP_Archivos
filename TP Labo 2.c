@@ -61,59 +61,6 @@ FILE* crearDat(){
 /*imprime una propiedad con el formato correspondiente.*/
 void imprimirPropiedad(FILE* propiedades, propiedad_t propiedad, int total, char opcion){
     printf("ID\tFecha de ingreso\tZona\tCiudad/Barrio\tDormitorios\tBa%cos\tSup. total\tSup. Cubierta\tPrecio\tMoneda\tOperacion\tActivo\n",164);
-    fseek(propiedades, 0, SEEK_END);
-    switch (opcion){
-    case 'a': //todas las propiedades
-        for (int i = 0; i <= total; i++){
-            fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
-            fread(&prop, sizeof(propiedad_t),1,);
-            printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
-        }
-        break;
-    case 'b': //solo las activas
-        for (int i = 0; i <= total; i++){
-            fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
-            fread(&prop, sizeof(propiedad_t),1,);
-            if (prop.flag_activo == 1){
-            printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
-            }
-        }
-        break;
-    case 'c': //un tipo de propiedad
-        for (int i = 0; i <= total; i++){
-            fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
-            fread(&prop, sizeof(propiedad_t),1,);
-            if (strcmp(prop.tipo_propiedad, "Casa") == 0 || strcmp(prop.tipo_propiedad, "PH") == 0 || strcmp(prop.tipo_propiedad, "Departamento") == 0){
-            printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
-            }
-        }
-        break;
-    case 'd': //un rango de tiempo
-        char fecha_inicio[9], fecha_fin[9];
-        printf("Ingrese la fecha minima (formato: DDMMYYYY): ");
-        scanf("%8s", fecha_inicio);
-        while (!validarFecha(fecha_inicio)) {
-            printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
-            scanf(" %8s", fecha_inicio);
-        }
-        printf("Ingrese la fecha maxima (formato: DDMMYYYY): ");
-        scanf("%8s", fecha_fin);
-        while (!validarFecha(fecha_fin)) {
-            printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
-            scanf(" %8s", fecha_fin);
-        }
-        for (int i = 0; i <= total; i++){
-            fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
-            fread(&prop, sizeof(propiedad_t),1,);
-            if (atoi(fecha_inicio) >= prop.fecha_ingreso && atoi(fecha_fin) <= prop.fecha_ingreso){
-            printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
-            }
-        }
-        break;
-    default:
-        printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
-        break;
-    }
 }
 void listarDat(FILE* propiedades){
     propiedad_t prop;
@@ -126,7 +73,58 @@ void listarDat(FILE* propiedades){
         printf ("[c]. Listar un tipo propiedad.\n");
         printf ("[d]. Listar en un rango de tiempo.\n");
         char opcion = getchar();    
-        imprimirPropiedad(prop, total, opcion);
+        switch (opcion){
+        case 'a': //todas las propiedades
+            for (int i = 0; i <= total; i++){
+                fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+                fread(&prop, sizeof(propiedad_t),1,);
+                imprimirPropiedad(prop);
+            }
+            break;
+        case 'b': //solo las activas
+            for (int i = 0; i <= total; i++){
+                fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+                fread(&prop, sizeof(propiedad_t),1,);
+                if (prop.flag_activo == 1){
+                    imprimirPropiedad(prop);
+                }
+            }
+            break;
+        case 'c': //un tipo de propiedad
+            for (int i = 0; i <= total; i++){
+                fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+                fread(&prop, sizeof(propiedad_t),1,);
+                if (strcmp(prop.tipo_propiedad, "Casa") == 0 || strcmp(prop.tipo_propiedad, "PH") == 0 || strcmp(prop.tipo_propiedad, "Departamento") == 0){
+                    imprimirPropiedad(prop);
+                }
+            }
+            break;
+        case 'd': //un rango de tiempo
+            char fecha_inicio[9], fecha_fin[9];
+            printf("Ingrese la fecha minima (formato: DDMMYYYY): ");
+            scanf("%8s", fecha_inicio);
+            while (!validarFecha(fecha_inicio)) {
+                printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
+                scanf(" %8s", fecha_inicio);
+            }
+            printf("Ingrese la fecha maxima (formato: DDMMYYYY): ");
+            scanf("%8s", fecha_fin);
+            while (!validarFecha(fecha_fin)) {
+                printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
+                scanf(" %8s", fecha_fin);
+            }
+            for (int i = 0; i <= total; i++){
+                fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+                fread(&prop, sizeof(propiedad_t),1,);
+                if (atoi(fecha_inicio) >= prop.fecha_ingreso && atoi(fecha_fin) <= prop.fecha_ingreso){
+                imprimirPropiedad(prop);
+                }
+            }
+            break;
+        default:
+            printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
+            break;
+        }
     }
 }
 
