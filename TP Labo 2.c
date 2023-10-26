@@ -109,6 +109,7 @@ void imprimirPropiedad(FILE* propiedades, propiedad_t propiedad, int total, char
             printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
             }
         }
+        break;
     default:
         printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
         break;
@@ -366,11 +367,35 @@ void buscarPropiedad(FILE* propiedades){
 }
 
 //(PUNTO 8) Modificar datos
-//muestra un submenu con opciones.
-//modifica ciudad/barrio, precio, o fecha de salida->(validar fecha y tambien modificar la baja logica).
-//siempre validando la entrada del usuario (con id) segun el campo modificado.
-//pide una confirmación antes de modificar el registro.
+/*Permite modificar ciudad/barrio, precio o fecha de salida.
+Con la modificacion de la fecha de salida se modifica la baja logica
+Se validan las entradas del usuario y se pide una confirmación antes de modificar el registro.*/
 void modificarPropiedad(FILE* propiedades){
+    char num[10] letra[20];
+    propiedad_t prop;
+    printf ("------------Modificar------------\n");
+    int id = ingresoID(num);
+    fseek (propiedades, (id-1)*sizeof (propiedad_t), SEEK_SET);
+    fread (&prop, sizeof(propiedad_t), 1, propiedades);
+    printf("Ingrese que modificacion desea hacer:\n[a]. Ciudad/barrio.\n[b]. Precio.\n[c]. Fecha de salida.\n");
+    char opcion = getchar();
+    opcion = tolower (opcion);
+    switch (opcion){
+    case 'a':
+        printf ("Usted va a modificar la siguiente propiedad:");
+        printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
+        printf ("Ingrese la ciudad/barrio de la propiedad: ");
+        scanf (" %19s", letra);
+        while (!validarTexto(letra)){
+            printf("Opci%cn inv%clida. Por favor, ingrese una ciudad/barrio v%clida: ", 162,160, 160);
+            scanf(" %19s", letra);
+        }
+        validarMayus(letra);
+        strcpy(prop.ciudad_barrio, letra);
+        break;
+    default:
+        break;
+    }
     
 }
 
