@@ -10,6 +10,7 @@
 typedef struct Propiedad {
     int id;
     char fecha_ingreso[30];
+    char fecha_salida[30];
     char zona[30];
     char ciudad_barrio[30];
     int dormitorios;
@@ -20,7 +21,6 @@ typedef struct Propiedad {
     char moneda[6];
     char tipo_propiedad[30];
     char operacion[30];
-    //fecha de salida
     int flag_activo;
 } propiedad_t
 
@@ -272,13 +272,80 @@ void altaPropiedad(FILE* propiedades){
 //cambia el campo "activo" a cero.
 //NO ESTOY SEGURO DE QUE ESTO ES LO QUE QUIERA LA PROFE
 void bajaLogica(FILE* propiedades){
+    int nReg,aux;
+    char opcion,id[6], cadAux[6] = "0";
+
+    propiedad_n busqueda;
+
+    do{
+        printf ("Ingrese el ID a buscar\n");
+        scanf (" %s",id);
+
+        if (validarInt(id) == 0){
+            printf("Error, ingrese otro ID\n");
+        }
+
+    } while (validarInt(id) == 0);
+
+    aux = atoi(id);
+
+    fseek(propiedades,0,SEEK_SET);
+    nReg=ftell(propiedades)/sizeof(propiedad_n);
+
+    if (id <= nReg){                                                            //si el id es valido y tiene un valor numerico, entonces ese registro no esta vacío
+        fseek(propiedades,(aux-1)*sizeof(propiedad_n),SEEK_SET);
+
+        fread(&busqueda,sizeof(propiedad_n),1,propiedades);
+
+        if (strcmp(busqueda.fecha_salida, cadAux) == 0){
+            printf ("Est%c seguro que quiere dar de baja a:\n",160);
+            imprimirRegistro(busqueda);
+            printf ("S/N\n");
+            do{
+                scanf (" %c",&opcion);
+                opcion = tolower(opcion);
+
+                if (opcion != 's' && opcion != 'n')
+                    printf("La opci%cn es incorrecta, ingrese otra opci%cn.\n",162,162);
+
+            } while (opcion != 's' && opcion != 'n');
+
+
+            switch (opcion){
+                case 's':
+                    busqueda.flag_activo = 0;
+                    fseek(propiedades, - sizeof(propiedad_n),SEEK_CUR);
+                    fwrite(&busqueda,sizeof(propiedad_n),1,propiedades);
+
+                    fseek(propiedades,0,SEEK_SET);
+
+                    while (fread(&busqueda, sizeof(propiedad_t), 1, propiedades) == 1) {
+                        if (busqueda.flag_activo == 1) {
+                            imprimirRegistro(busqueda);
+                        }
+                    }
+
+                    break;
+                case 'n':
+                    printf ("La baja ha sido cancelada con %cxito\n",130);
+                    break;
+
+            }
+
+
+        } else {
+            printf ("Error, el registro ya tiene una fecha de salida\n",131,161);}
+
+
+    } else {
+        printf ("Error, no existe el ID ingresado\n");}
 
 }
 
 buscarPorID(propiedades){
 
     int nReg,aux;
-    char = id[6];
+    char id[6];
 
     propiedad_n busqueda;
 
@@ -303,7 +370,7 @@ buscarPorID(propiedades){
         fread(&busqueda,sizeof(propiedad_n),1,propiedades);
 
         if (busqueda.id == aux){
-            imprimirRegistro(busqueda)
+            imprimirRegistro(busqueda);
         } else {
             printf ("Error, el registro est%c vac%co\n",131,161);}
 
