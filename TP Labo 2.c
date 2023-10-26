@@ -9,18 +9,18 @@
 
 typedef struct Propiedad {
     int id;
-    char fecha_ingreso[30];
-    char zona[30];
-    char ciudad_barrio[30];
+    char fecha_ingreso[10];
+    char zona[20];
+    char ciudad_barrio[20];
     int dormitorios;
     int banos;
     float superficie_total;
     float superficie_cubierta;
     float precio;
     char moneda[6];
-    char tipo_propiedad[30];
-    char operacion[30];
-    //fecha de salida 
+    char tipo_propiedad[20];
+    char operacion[20];
+    char fecha_salida[20];
     int flag_activo;
 } propiedad_t
 
@@ -57,19 +57,76 @@ FILE* crearDat(){
     } while (tolower (opcion) != 's' || tolower (opcion) !='n');
 }
 
-//imprime una propiedad con el formato correspondiente.
-void imprimirPropiedad(FILE* propiedades){
-    
+//(PUNTO 5) Listado del contenido del archivo
+/*imprime una propiedad con el formato correspondiente.*/
+void imprimirPropiedad(FILE* propiedades, propiedad_t propiedad, int total, char opcion){
+    printf("ID\tFecha de ingreso\tZona\tCiudad/Barrio\tDormitorios\tBa%cos\tSup. total\tSup. Cubierta\tPrecio\tMoneda\tOperacion\tActivo\n",164);
+    fseek(propiedades, 0, SEEK_END);
+    switch (opcion){
+    case 'a': //todas las propiedades
+        for (int i = 0; i <= total; i++){
+            fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+            fread(&prop, sizeof(propiedad_t),1,);
+            printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
+        }
+        break;
+    case 'b': //solo las activas
+        for (int i = 0; i <= total; i++){
+            fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+            fread(&prop, sizeof(propiedad_t),1,);
+            if (prop.flag_activo == 1){
+            printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
+            }
+        }
+        break;
+    case 'c': //un tipo de propiedad
+        for (int i = 0; i <= total; i++){
+            fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+            fread(&prop, sizeof(propiedad_t),1,);
+            if (strcmp(prop.tipo_propiedad, "Casa") == 0 || strcmp(prop.tipo_propiedad, "PH") == 0 || strcmp(prop.tipo_propiedad, "Departamento") == 0){
+            printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
+            }
+        }
+        break;
+    case 'd': //un rango de tiempo
+        char fecha_inicio[9], fecha_fin[9];
+        printf("Ingrese la fecha minima (formato: DDMMYYYY): ");
+        scanf("%8s", fecha_inicio);
+        while (!validarFecha(fecha_inicio)) {
+            printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
+            scanf(" %8s", fecha_inicio);
+        }
+        printf("Ingrese la fecha maxima (formato: DDMMYYYY): ");
+        scanf("%8s", fecha_fin);
+        while (!validarFecha(fecha_fin)) {
+            printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
+            scanf(" %8s", fecha_fin);
+        }
+        for (int i = 0; i <= total; i++){
+            fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+            fread(&prop, sizeof(propiedad_t),1,);
+            if (atoi(fecha_inicio) >= prop.fecha_ingreso && atoi(fecha_fin) <= prop.fecha_ingreso){
+            printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
+            }
+        }
+    default:
+        printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
+        break;
+    }
 }
-
-//impresion con formato del archivo de propiedades.
-void listarDat(){
-    //USAR IMPRIMIRPROPIEDAD()
-    //submenu
-    //1. listar todos
-    //2. solo los activos
-    //3. un tipo de propiedad
-    //4. un rango de tiempo (min, max)
+void listarDat(FILE* propiedades){
+    propiedad_t prop;
+    fseek(propiedades, 0, SEEK_END);
+    int total = ftell(propiedades) / sizeof(propiedad_t);
+    while (1){
+        printf ("-----------------Listado-----------------\n");
+        printf ("[a]. Listar todas las propiedades.\n");
+        printf ("[b]. Listar solo las propiedades activas.\n");
+        printf ("[c]. Listar un tipo propiedad.\n");
+        printf ("[d]. Listar en un rango de tiempo.\n");
+        char opcion = getchar();    
+        imprimirPropiedad(prop, total, opcion);
+    }
 }
 
 //(PUNTO 1) Impresion con formato del menu principal.
@@ -82,11 +139,11 @@ void mostrarMenu(){
     printf ("[e]. Baja logica de una propiedad.\n");
     printf ("[f]. Baja fisica de una propiedad.\n");
     printf ("[g]. Listar baja fisica de propiedades.\n");
-    printf ("[h]. Salir.\n");
-    
+    printf ("[h]. Salir.\n"); 
 }
 
 //(PUNTO 3) Validacion de los datos ingresados
+//(PUNTO 6) Alta de una propiedad
 /*inserta una propiedad nueva en el archivo propiedades, en la posicion de ID correspondiente.
 valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
 llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.*/
@@ -164,12 +221,12 @@ void altaPropiedad(FILE* propiedades){
         id=ingresoID(num);
         fseek(propiedades, 0, SEEK_END);
         int totalReg = ftell(propiedades) / sizeof(propiedad_t);
-        if (id <= totalReg){ //si es mas chico existe, busco donde esta
+        if (id <= totalReg){
             fseek (propiedades, (id-1)*sizeof (propiedad_t), SEEK_SET);
             fread (&dato, sizeof(propiedad_t), 1, propiedades);
             if (dato.id !=0){
                 printf("La posici%cn %d ya est%c ocupada.\n", 162, id, 160);
-            } else { //q hago si el activo esta en 0?????????
+            } else {
                 nuevo.id = id;
             }
         } else {
@@ -183,14 +240,28 @@ void altaPropiedad(FILE* propiedades){
         }
     } while (dato.id !=0 && id <= totalReg);
 
-    printf ("Ingrese la fecha actual: ");
-    scanf ("%8s", fecha);
-    while (!validarFecha (fecha)){
-        printf("Opci%cn inv%clida. Por favor, ingrese una fecha con formato DDMMYYYY: ", 162,160);
+    //verifico que la fecha no sea mayor a la actual
+    time_t tiempo_actual;
+    struct tm fecha_actual;
+    struct tm fecha_ingresada;
+
+    //obtengo la fecha actual y la guardo
+    time(&tiempo_actual);
+    tm.fecha_actual = localtime(&tiempo_actual);
+
+    printf("Ingrese la fecha actual (formato: DDMMYYYY): ");
+    scanf("%8s", fecha);
+    while (!validarFecha(fecha)) {
+        printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
         scanf(" %8s", fecha);
     }
-    //VERIFICAR SI ES LA REAL CON LA FECHA DE LA COMPU
-    nuevo.fecha_ingreso = fecha;
+    //guardo lo que ingreso en los campos
+    int dd= (fecha[0]-48)*10 + (fecha[1]-48);
+    int mm = (fecha[2]-48)*10 + (fecha[3]-48);
+    fecha_ingresada.tm_year = atoi(fecha + 4);
+    fecha_ingresada.tm_mon = mm;
+    fecha_ingresada.tm_mday = dd;
+    //VER COMPARACION DE LAS FECHAS
 
     printf ("Ingrese la zona de la propiedad: ");
     scanf (" %19s", letra);
@@ -226,7 +297,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %19s", num);
     }
     int bano = atoi(num);
-    nuevo.dormitorios = bano;
+    nuevo.banos = bano;
 
     printf ("Ingrese la superficie total de la propiedad: ");
     scanf (" %19s", num);
@@ -244,7 +315,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %19s", num);
     }
     float s_cub = atof(num);
-    nuevo.superficie_total = s_cub;
+    nuevo.superficie_cubierta = s_cub;
 
     printf ("Ingrese el valor de la propiedad: ");
     scanf (" %19s", num);
@@ -253,7 +324,7 @@ void altaPropiedad(FILE* propiedades){
         scanf(" %19s", num);
     }
     float precio = atof(num);
-    nuevo.superficie_total = precio;
+    nuevo.precio = precio;
     elegirMoneda(nuevo);
     elegirPropiedad(nuevo);
 	elegirOperacion(nuevo);
@@ -282,6 +353,7 @@ buscarPorOp(propiedades){
     //franco
 }
 
+//(PUNTO 7) Busqueda de datos
 //muestra un submenu de opciones.
 //busca propiedades por ID o por operacion y luego tipo de propiedad
 //segun la entrada del usuario
