@@ -275,27 +275,17 @@ void bajaLogica(FILE* propiedades){
     int nReg,aux;
     char opcion,id[6], cadAux[6] = "0";
 
-    propiedad_n busqueda;
+    propiedad_t busqueda;
 
-    do{
-        printf ("Ingrese el ID a buscar\n");
-        scanf (" %s",id);
-
-        if (validarInt(id) == 0){
-            printf("Error, ingrese otro ID\n");
-        }
-
-    } while (validarInt(id) == 0);
-
-    aux = atoi(id);
+    aux = ingresoID(id);
 
     fseek(propiedades,0,SEEK_SET);
-    nReg=ftell(propiedades)/sizeof(propiedad_n);
+    nReg=ftell(propiedades)/sizeof(propiedad_t);
 
     if (id <= nReg){                                                            //si el id es valido y tiene un valor numerico, entonces ese registro no esta vacío
-        fseek(propiedades,(aux-1)*sizeof(propiedad_n),SEEK_SET);
+        fseek(propiedades,(aux-1)*sizeof(propiedad_t),SEEK_SET);
 
-        fread(&busqueda,sizeof(propiedad_n),1,propiedades);
+        fread(&busqueda,sizeof(propiedad_t),1,propiedades);
 
         if (strcmp(busqueda.fecha_salida, cadAux) == 0){
             printf ("Est%c seguro que quiere dar de baja a:\n",160);
@@ -314,8 +304,8 @@ void bajaLogica(FILE* propiedades){
             switch (opcion){
                 case 's':
                     busqueda.flag_activo = 0;
-                    fseek(propiedades, - sizeof(propiedad_n),SEEK_CUR);
-                    fwrite(&busqueda,sizeof(propiedad_n),1,propiedades);
+                    fseek(propiedades, - sizeof(propiedad_t),SEEK_CUR);
+                    fwrite(&busqueda,sizeof(propiedad_t),1,propiedades);
 
                     fseek(propiedades,0,SEEK_SET);
 
