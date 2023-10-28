@@ -63,7 +63,7 @@ FILE* crearDat(){
 //FALTA LISTAR POR RANGO DE TIEMPO!!!!!!!!!!!!!!!!!!! (118-139)
 
 void imprimirPropiedad(FILE* propiedades, propiedad_t prop){
-    printf("%-5d%-9s%-20s%-20s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
+    printf("%-5d%-9s%-30s%-30s%-2d%-2d%-10.2f%-10.2f%-10.2f%-5s%-13s%-19s\n", prop.id, prop.fecha_ingreso, prop.zona, prop.ciudad_barrio, prop.dormitorios, prop.banos, prop.superficie_total, prop.superficie_cubierta, prop.precio, prop.moneda, prop.tipo_propiedad, prop.operacion, prop.fecha_salida, prop.flag_activo);
 }
 void listarDat(FILE* propiedades){
     propiedad_t prop;
