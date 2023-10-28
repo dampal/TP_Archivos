@@ -464,13 +464,14 @@ FILE* bajaFisica(FILE* propiedades){
     int nReg,aux;
     char id[6];
     propiedad_t busqueda;
+    propiedad_t propiedad_t vacio = {0,'0','0','0',0,0,0,0,0,'0','0','0','0',0};
 
     FILE * pArchivoBajas;
     pArchivoBajas = fopen("propiedades_bajas_<fecha>.xyz","a+");
 
     aux = ingresoID(id);
 
-    if(pArchivo != NULL){
+    if(pArchivoBajas != NULL){
 
             fseek(pArchivoBajas,0,SEEK_SET);
 
@@ -488,23 +489,8 @@ FILE* bajaFisica(FILE* propiedades){
                     busqueda.tipo_propiedad, busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
 
 
-                busqueda.id = 0;
-                busqueda.fecha_ingreso = "0";
-                busqueda.zona = "0";
-                busqueda.ciudad_barrio = "0";
-                busqueda.dormitorios = 0;
-                busqueda.banos = 0;
-                busqueda.superficie_total = 0;
-                busqueda.superficie_cubierta = 0;
-                busqueda.precio = 0;
-                busqueda.moneda = "0";
-                busqueda.tipo_propiedad = "0";
-                busqueda.operacion = "0";
-                busqueda.fecha_salida = "0";
-                busqueda.flag_activo = 0;
-
                 fseek(propiedades, - sizeof(propiedad_t),SEEK_CUR);
-                fwrite(&busqueda,sizeof(propiedad_t),1,propiedades);
+                fwrite(&vacio,sizeof(propiedad_t),1,propiedades);
 
                 return pArchivoBajas;
 
