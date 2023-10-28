@@ -464,7 +464,7 @@ FILE* bajaFisica(FILE* propiedades){
     int nReg,aux;
     char id[6];
     propiedad_t busqueda;
-    propiedad_t propiedad_t vacio = {0,'0','0','0',0,0,0,0,0,'0','0','0','0',0};
+    propiedad_t vacio = {0,'0','0','0',0,0,0,0,0,'0','0','0','0',0};
 
     FILE * pArchivoBajas;
     pArchivoBajas = fopen("propiedades_bajas_<fecha>.xyz","a+");
