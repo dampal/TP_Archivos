@@ -472,6 +472,8 @@ FILE* bajaFisica(FILE* propiedades){
 
     if(pArchivo != NULL){
 
+            fseek(pArchivoBajas,0,SEEK_SET);
+
             fseek(propiedades,0,SEEK_SET);
             nReg=ftell(propiedades)/sizeof(propiedad_t);
 
