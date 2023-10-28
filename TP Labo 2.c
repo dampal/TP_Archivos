@@ -504,7 +504,7 @@ FILE* bajaFisica(FILE* propiedades){
                 fseek(propiedades, - sizeof(propiedad_t),SEEK_CUR);
                 fwrite(&busqueda,sizeof(propiedad_t),1,propiedades);
 
-
+                return pArchivoBajas;
 
             } else {
                 printf ("Error, no existe el ID ingresado\n");}
@@ -512,6 +512,7 @@ FILE* bajaFisica(FILE* propiedades){
 
 
     fclose(pArchivo);
+
     } else printf("Error en la apertura del archivo!");
 
 
