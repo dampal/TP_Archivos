@@ -518,52 +518,6 @@ FILE* bajaFisica(FILE* propiedades){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 //imprime los registros de bajasXyz con el formato correspondiente.
