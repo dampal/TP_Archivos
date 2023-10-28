@@ -479,7 +479,32 @@ FILE* bajaFisica(FILE* propiedades){
                 fseek(propiedades,(aux-1)*sizeof(propiedad_t),SEEK_SET);
 
                 fread(&busqueda,sizeof(propiedad_t),1,propiedades);
-                fprintf(pArchivo,"%d%15s%15f\n", n,nombre,salario);
+
+                fprintf(pArchivoBajas, "%5d%9s%30s%30s%2d%2d%10.2f%10.2f%10.2f%5s%13s%19s\n",\
+                    busqueda.id, busqueda.fecha_ingreso, busqueda.zona, busqueda.ciudad_barrio, busqueda.dormitorios,\
+                    busqueda.banos, busqueda.superficie_total, busqueda.superficie_cubierta, busqueda.precio, busqueda.moneda,\
+                    busqueda.tipo_propiedad, busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
+
+
+                busqueda.id = 0;
+                busqueda.fecha_ingreso = "0";
+                busqueda.zona = "0";
+                busqueda.ciudad_barrio = "0";
+                busqueda.dormitorios = 0;
+                busqueda.banos = 0;
+                busqueda.superficie_total = 0;
+                busqueda.superficie_cubierta = 0;
+                busqueda.precio = 0;
+                busqueda.moneda = "0";
+                busqueda.tipo_propiedad = "0";
+                busqueda.operacion = "0";
+                busqueda.fecha_salida = "0";
+                busqueda.flag_activo = 0;
+
+                fseek(propiedades, - sizeof(propiedad_t),SEEK_CUR);
+                fwrite(&busqueda,sizeof(propiedad_t),1,propiedades);
+
+
 
             } else {
                 printf ("Error, no existe el ID ingresado\n");}
