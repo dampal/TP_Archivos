@@ -461,6 +461,83 @@ void modificarPropiedad(FILE* propiedades){
 //devuelve un puntero activo al archivo de bajas.
 FILE* bajaFisica(FILE* propiedades){
 
+    int nReg,aux;
+    char id[6];
+    propiedad_t busqueda;
+
+    FILE * pArchivoBajas;
+    pArchivoBajas = fopen("propiedades_bajas_<fecha>.xyz","a+");
+
+    aux = ingresoID(id);
+
+    if(pArchivo != NULL){
+
+            fseek(propiedades,0,SEEK_SET);
+            nReg=ftell(propiedades)/sizeof(propiedad_t);
+
+            if (id <= nReg){
+                fseek(propiedades,(aux-1)*sizeof(propiedad_t),SEEK_SET);
+
+                fread(&busqueda,sizeof(propiedad_t),1,propiedades);
+                fprintf(pArchivo,"%d%15s%15f\n", n,nombre,salario);
+
+            } else {
+                printf ("Error, no existe el ID ingresado\n");}
+
+
+
+    fclose(pArchivo);
+    } else printf("Error en la apertura del archivo!");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 //imprime los registros de bajasXyz con el formato correspondiente.
