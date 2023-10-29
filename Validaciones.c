@@ -6,9 +6,8 @@ int validarInt (char num[]){
             return 0;
         }
     }
-    return 1;    
+    return 1;
 }
-
 int validarFloat(char flotante[]){
     int cantPuntos = 0;
     for(int i=0; i<strlen(flotante); i++){
@@ -19,14 +18,13 @@ int validarFloat(char flotante[]){
             return 0;
         }
     }
-    return 1;   
+    return 1;
 }
-
 //Recibe un string que contiene una fecha en formato DDMMYYYY
 //chequea si esa fecha es una fecha válida, teniendo en cuenta cantidad de dias por mes y años bisiestos.
 //devuelve 1 si es válida, 0 si no lo es.
 int validarFecha(char fecha[]){
-    if(atoi(fecha)<10000000 && atoi(fecha)>9999999){
+    if(atoi(fecha)>10000000 && atoi(fecha)<99999999){
         int dd,mm,yy;
         dd = (fecha[0]-48)*10 + (fecha[1]-48);
         mm = (fecha[2]-48)*10 + (fecha[3]-48);
@@ -43,14 +41,47 @@ int validarFecha(char fecha[]){
                 else if((dd>=1 && dd<=28) && (mm==2))
                     return 1;
                 else if(dd==29 && mm==2 && (yy%400==0 ||(yy%4==0 && yy%100!=0)))  //chequea bisiestos
-                    return 1;            
+                    return 1;
             }
-            
+
         }
     }
     return 0;
 }
+int compararFecha(char fecha[]) {
+    struct tm fecha_tm;
+    int dd, mm, yy;
+    if (sscanf(fecha, "%2d%2d%4d", &dd, &mm, &yy) != 3) {
+        return 0; // Formato incorrecto
+    }
 
+    // Configurar la estructura tm con la fecha ingresada
+    fecha_tm.tm_mday = dd;
+    fecha_tm.tm_mon = mm - 1; // Restar 1 porque en struct tm, enero es 0
+    fecha_tm.tm_year = yy - 1900; // Restar 1900 porque struct tm cuenta los años desde 1900
+    fecha_tm.tm_hour = 0;
+    fecha_tm.tm_min = 0;
+    fecha_tm.tm_sec = 0;
+
+    time_t fecha_actual;
+
+    // Obtener la fecha actual
+    time(&fecha_actual);
+
+    // Comparar las fechas
+    if (mktime(&fecha_tm) > fecha_actual) {
+        return 0; // La fecha ingresada es mayor que la fecha actual
+    } else {
+        return 1; // La fecha ingresada es menor o igual que la fecha actual
+    }
+}
+int convertirFecha(char fecha[]){
+    int dd,mm,yy;
+        dd = (fecha[0]-48)*10 + (fecha[1]-48);
+        mm = (fecha[2]-48)*10 + (fecha[3]-48);
+        yy = atoi(fecha+4);
+    return (yy * 1000 + mm * 100 + dd);
+}
 //Chequea si el texto ingresado contiene caracteres que no sean texto, puntuación o espacios.
 //En caso de encontrar caracteres invalidos, devuelve cero.
 //Si es valido, devuelve 1.
@@ -62,37 +93,17 @@ int validarTexto (char texto[]){
     }
     return 1;
 }
-
 // Chequea que cada palabra del texto "formato" empiece con mayúscula.
-// Cambia la primer letra de cada palabra a mayus en caso de que no lo sea. 
+// Cambia la primer letra de cada palabra a mayus en caso de que no lo sea.
 void validarMayus (char formato[]){
-    
+
     if(islower(formato[0])){
         formato[0] = toupper(formato[0]);
     }
-    
+
     for(int i = 1; i < strlen(formato); i++){
         if(islower(formato[i]) && !isalpha(formato[i-1])){
             formato[i] = toupper(formato[i]);
         }
     }
 }
-
-/*Tener en cuenta que en el caso de altas el campo activo siempre es 1
-(o carácter que identifica el estar activo), en el alta, este campo no se ingresa por teclado. */
-
-/*Debe controlar el error si el usuario ingresa una cadena o carácter cuando debe ser un número, o viceversa.*/
-
-/*En el caso de los campos: tipo de propiedad, operación y moneda, observar que hay más de un tipo,
-en éste caso se debe dar al usuario sólo las opciones para que elija y
-evitar que ingrese el texto completo como forma de evitar errores de tipeo en el texto que se va a registrar.*/
-
-/*Las cadenas deben respetar el formato, es decir, primera letra mayúscula y el resto en mínúscula.*/
-
-/*En cada nuevo registro, antes de grabar en el archivo y una vez realizadas las primeras validaciones
-y comprobaciones de errores, se debe tener en cuenta que:
--Los datos de fecha deben ser correctos, es decir que hay que considerar los rangos de días
-(por ejemplo controlar los días número 31 respecto del ingreso del mes).
-Controlar también los meses y los años. 
--La fecha de salida o egreso de la propiedad no puede ser mayor que la actual,
-se debe controlar eso y si es necesario utilizar funciones de tiempo de C.*/
