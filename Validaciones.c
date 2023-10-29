@@ -50,6 +50,28 @@ int validarFecha(char fecha[]){
     }
     return 0;
 }
+int compararFecha (char fecha[]){
+    struct tm fecha_tm;
+    int dd, mm, yy;
+    if (sscanf(fecha, "%2d%2d%4d", &dd, &mm, &yy) != 3) {
+        return 0; // Formato incorrecto
+    }
+
+    // Configurar la estructura tm con la fecha ingresada
+    fecha_tm.tm_mday = dd;
+    fecha_tm.tm_mon = mm - 1;
+    fecha_tm.tm_year = yy - 1900;
+    fecha_tm.tm_hour = 0;
+    fecha_tm.tm_min = 0;
+    fecha_tm.tm_sec = 0;
+    time_t fecha_actual;
+    time(&fecha_actual);
+    if (mktime(&fecha_tm) > fecha_actual){
+        return 0;
+    } else {
+        return 1;
+    }
+}
 
 //Chequea si el texto ingresado contiene caracteres que no sean texto, puntuación o espacios.
 //En caso de encontrar caracteres invalidos, devuelve cero.
