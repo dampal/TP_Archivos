@@ -373,6 +373,7 @@ buscarPorID(propiedades){
 
 buscarPorOp(propiedades){
 
+    int flag1 = 0, flag2 = 0;
 
     propiedad_t regBuscar,regArchivo;
     elegirOperacion(regBuscar);
@@ -382,21 +383,33 @@ buscarPorOp(propiedades){
     while (fread(&regArchivo, sizeof(propiedad_t), 1, propiedades) == 1) {
         if (strcmp(regBuscar.operacion, regArchivo.operacion) == 0) {
             imprimirRegistro(regArchivo);
+            flag1 = 1;
         }
     }
 
 
-    elegirPropiedad(regBuscar);
-    fseek(propiedades,0,SEEK_SET);
+    if (flag1 == 1){
+        elegirPropiedad(regBuscar);
+        fseek(propiedades,0,SEEK_SET);
 
 
-    printf ("Filtro por Operaci%cn y por Propiedad\n",162);
-    while (fread(&regArchivo, sizeof(propiedad_t), 1, propiedades) == 1) {
-        if (strcmp(regBuscar.operacion, regArchivo.operacion) == 0 && strcmp(regBuscar.tipo_propiedad, regArchivo.tipo_propiedad) == 0) {
-            imprimirRegistro(regArchivo);
+        printf ("Filtro por Operaci%cn y por Propiedad\n",162);
+        while (fread(&regArchivo, sizeof(propiedad_t), 1, propiedades) == 1) {
+            if (strcmp(regBuscar.operacion, regArchivo.operacion) == 0 && strcmp(regBuscar.tipo_propiedad, regArchivo.tipo_propiedad) == 0) {
+                imprimirRegistro(regArchivo);
+                flag2 = 1;
+            }
         }
-    }
 
+
+        if (flag2 == 0){
+            printf ("No se hallaron resultados en b%csqueda por Propiedad\n",163);
+        }
+
+
+
+
+    } else { printf ("No se encontr%c la Operaci%cn a buscar\n",162,162); }
 
 }
 
