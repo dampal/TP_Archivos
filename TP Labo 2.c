@@ -486,53 +486,43 @@ void modificarPropiedad(FILE* propiedades){
 //en este graba todas las propiedades inactivas de "propiedades"
 //simultaneamente elimina esos registros de "propiedades"
 //devuelve un puntero activo al archivo de bajas.
-FILE* bajaFisica(FILE* propiedades){
-
-    int nReg,aux;
-    char id[6];
+FILE* bajaFisica(FILE* propiedades) {
+    int nReg, aux_id;
     propiedad_t busqueda;
-    propiedad_t vacio = {0,'0','0','0',0,0,0,0,0,'0','0','0','0',0};
+    propiedad_t vacio = {0, "0", "0", "0", 0, 0, 0, 0, 0, "0", "0", "0", "0", 0};
+    FILE* pArchivoBajas;
+    pArchivoBajas = fopen("propiedades_bajas_fecha.xyz", "a+");
 
-    FILE * pArchivoBajas;
-    pArchivoBajas = fopen("propiedades_bajas_<fecha>.xyz","a+");
+    if (pArchivoBajas != NULL) {
+        fseek(pArchivoBajas, 0, SEEK_SET);
+        fseek(propiedades, 0, SEEK_END);
 
-    aux = ingresoID(id);
+        nReg = ftell(propiedades) / sizeof(propiedad_t);
+        aux_id = ingresoID();
 
-    if(pArchivoBajas != NULL){
+        if (aux_id <= nReg) {
+            fseek(propiedades, (aux_id - 1) * sizeof(propiedad_t), SEEK_SET);
+            fread(&busqueda, sizeof(propiedad_t), 1, propiedades);
 
-            fseek(pArchivoBajas,0,SEEK_SET);
+            fprintf(pArchivoBajas, "%-3d %-9s %-18s %-17s %-13d %-7d %-11.2f %-14.2f %-10.2f %-8s %-11s %-19s %-8s %-7d\n",
+                    busqueda.id, busqueda.fecha_ingreso, busqueda.zona, busqueda.ciudad_barrio, busqueda.dormitorios,
+                    busqueda.banos, busqueda.superficie_total, busqueda.superficie_cubierta, busqueda.precio,
+                    busqueda.moneda, busqueda.tipo_propiedad, busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
 
-            fseek(propiedades,0,SEEK_SET);
-            nReg=ftell(propiedades)/sizeof(propiedad_t);
+            fseek(propiedades, -sizeof(propiedad_t), SEEK_CUR);
+            fwrite(&vacio, sizeof(propiedad_t), 1, propiedades);
 
-            if (id <= nReg){
-                fseek(propiedades,(aux-1)*sizeof(propiedad_t),SEEK_SET);
+            fclose(pArchivoBajas);
+            return pArchivoBajas;
+        } else {
+            printf("Error, no existe el ID ingresado\n");
+        }
+        fclose(pArchivoBajas);
+    } else {
+        printf("Error en la apertura del archivo pArchivoBajas");
+    }
 
-                fread(&busqueda,sizeof(propiedad_t),1,propiedades);
-
-                fprintf(pArchivoBajas, "%5d%9s%30s%30s%2d%2d%10.2f%10.2f%10.2f%5s%13s%19s\n",\
-                    busqueda.id, busqueda.fecha_ingreso, busqueda.zona, busqueda.ciudad_barrio, busqueda.dormitorios,\
-                    busqueda.banos, busqueda.superficie_total, busqueda.superficie_cubierta, busqueda.precio, busqueda.moneda,\
-                    busqueda.tipo_propiedad, busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
-
-
-                fseek(propiedades, - sizeof(propiedad_t),SEEK_CUR);
-                fwrite(&vacio,sizeof(propiedad_t),1,propiedades);
-
-                return pArchivoBajas;
-
-            } else {
-                printf ("Error, no existe el ID ingresado\n");}
-
-
-
-    fclose(pArchivo);
-
-    } else printf("Error en la apertura del archivo!");
-
-
-
-
+    return NULL;
 }
 
 //imprime los registros de bajasXyz con el formato correspondiente.
