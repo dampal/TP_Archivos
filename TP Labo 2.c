@@ -262,6 +262,8 @@ void altaPropiedad(FILE* propiedades){
     //Guardo el nuevo struct en el lugar que corresponda
     /*si todo esta ok, la propiedad queda activa*/
     nuevo.flag_activo=1;
+    strcpy(nuevo.fecha_salida, "0");
+
     fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
     fwrite(&nuevo, sizeof(propiedad_t), 1, propiedades);
     printf("Propiedad agregada exitosamente.\n");
@@ -272,64 +274,53 @@ void altaPropiedad(FILE* propiedades){
 //cambia el campo "activo" a cero.
 //NO ESTOY SEGURO DE QUE ESTO ES LO QUE QUIERA LA PROFE
 void bajaLogica(FILE* propiedades){
-    int nReg,aux;
-    char opcion,id[6], cadAux[6] = "0";
-
+    int nReg,aux_id;
+    char opcion, cadAux[6] = "0";
     propiedad_t busqueda;
 
-    aux = ingresoID(id);
-
-    fseek(propiedades,0,SEEK_SET);
-    nReg=ftell(propiedades)/sizeof(propiedad_t);
-
-    if (aux <= nReg){                                                            //si el id es valido y tiene un valor numerico, entonces ese registro no esta vacío
-        fseek(propiedades,(aux-1)*sizeof(propiedad_t),SEEK_SET);
-
+    aux_id = ingresoID();
+    fseek(propiedades, 0, SEEK_END);
+    nReg = ftell(propiedades)/sizeof(propiedad_t);
+    if (aux_id <= nReg){
+        fseek(propiedades,(aux_id-1)*sizeof(propiedad_t),SEEK_SET);
         fread(&busqueda,sizeof(propiedad_t),1,propiedades);
 
         if (strcmp(busqueda.fecha_salida, cadAux) == 0){
             printf ("Est%c seguro que quiere dar de baja a:\n",160);
-            imprimirRegistro(busqueda);
-            printf ("S/N\n");
+            imprimirEncabezado();
+            imprimirPropiedad(busqueda);
+            printf ("S/N: ");
             do{
                 scanf (" %c",&opcion);
+                fflush(stdin);
                 opcion = tolower(opcion);
-
-                if (opcion != 's' && opcion != 'n')
-                    printf("La opci%cn es incorrecta, ingrese otra opci%cn.\n",162,162);
-
+                if (opcion != 's' && opcion != 'n'){
+                    printf("La opci%cn es incorrecta, ingrese otra opci%cn (S/N).\n",162,162);
+                }
             } while (opcion != 's' && opcion != 'n');
-
-
             switch (opcion){
                 case 's':
                     busqueda.flag_activo = 0;
                     fseek(propiedades, - sizeof(propiedad_t),SEEK_CUR);
                     fwrite(&busqueda,sizeof(propiedad_t),1,propiedades);
-
                     fseek(propiedades,0,SEEK_SET);
-
+                    imprimirEncabezado();
                     while (fread(&busqueda, sizeof(propiedad_t), 1, propiedades) == 1) {
                         if (busqueda.flag_activo == 1) {
-                            imprimirRegistro(busqueda);
+                            imprimirPropiedad(busqueda);
                         }
                     }
-
                     break;
                 case 'n':
-                    printf ("La baja ha sido cancelada con %cxito\n",130);
+                    printf ("La baja ha sido cancelada con %cxito.\n",130);
                     break;
-
             }
-
-
         } else {
-            printf ("Error, el registro ya tiene una fecha de salida\n",131,161);}
-
-
+            printf ("Error, el registro ya tiene una fecha de salida\n",131,161);
+        }
     } else {
-        printf ("Error, no existe el ID ingresado\n");}
-
+        printf ("Error, no existe el ID ingresado.\n");
+    }
 }
 
 buscarPorID(propiedades){
