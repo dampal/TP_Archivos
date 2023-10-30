@@ -297,7 +297,7 @@ void altaPropiedad(FILE* propiedades){
     scanf("%8s", fecha);
     fflush(stdin);
     while (!validarFecha(fecha) || !compararFecha(fecha)) {
-        printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
+        printf("Opci%cn inv%clida. Por favor, ingrese una fecha con formato DDMMYYYY: ", 162,160);
         scanf(" %8s", fecha);
         fflush(stdin);
     }
