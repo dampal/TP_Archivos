@@ -20,9 +20,7 @@ int validarFloat(char flotante[]){
     }
     return 1;
 }
-//Recibe un string que contiene una fecha en formato DDMMYYYY
-//chequea si esa fecha es una fecha válida, teniendo en cuenta cantidad de dias por mes y años bisiestos.
-//devuelve 1 si es válida, 0 si no lo es.
+
 int validarFecha(char fecha[]){
     if(atoi(fecha)>10000000 && atoi(fecha)<99999999){
         int dd,mm,yy;
@@ -80,11 +78,10 @@ int convertirFecha(char fecha[]){
         dd = (fecha[0]-48)*10 + (fecha[1]-48);
         mm = (fecha[2]-48)*10 + (fecha[3]-48);
         yy = atoi(fecha+4);
-    return (yy * 1000 + mm * 100 + dd);
+    return (yy * 10000 + mm * 100 + dd);
 }
-//Chequea si el texto ingresado contiene caracteres que no sean texto, puntuación o espacios.
-//En caso de encontrar caracteres invalidos, devuelve cero.
-//Si es valido, devuelve 1.
+
+
 int validarTexto (char texto[]){
     for(int j = 0; j < strlen(texto); j++){
         if(!isalpha(texto[j]) && !ispunct(texto[j]) && !isspace(texto[j])){
@@ -93,8 +90,7 @@ int validarTexto (char texto[]){
     }
     return 1;
 }
-// Chequea que cada palabra del texto "formato" empiece con mayúscula.
-// Cambia la primer letra de cada palabra a mayus en caso de que no lo sea.
+
 void validarMayus (char formato[]){
 
     if(islower(formato[0])){
