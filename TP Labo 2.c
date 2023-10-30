@@ -577,6 +577,16 @@ void modificarPropiedad(FILE* propiedades){
     }
 }
 
+void listarXyz(FILE* bajasXyz){
+    int tamanio = 100;
+    char buffer[100];
+    imprimirEncabezado();
+    while((tamanio = fread(buffer,tamanio,sizeof(char),bajasXyz))>0){
+        fwrite(buffer,tamanio,sizeof(char),stdout);
+    }
+    return 0;
+}
+
 int main(){
     printf("%cBienvenido a Inmobiliaria Bub%c!\n", 173, 163);
     FILE* propiedades = crearDat();
@@ -601,16 +611,19 @@ int main(){
                 modificarPropiedad(propiedades);
                 break;
             case 'e':
-                //bajaLogica(propiedades);
+                bajaLogica(propiedades);
                 break;
             case 'f':
-                //bajasXyz = bajaFisica(propiedades);
+                bajasXyz = bajaFisica(propiedades);
                 break;
             case 'g':
-                //listarXyz(bajasXyz);
+                listarXyz(bajasXyz);
                 break;
             case 'h':
             //cerrar el archivo y salir del programa
+                if (bajasXyz){
+                    fclose(bajasXyz);
+                }
                 fclose (propiedades);
                 printf("Gracias por confiar en Inmobiliaria Bub%c. Saliendo del programa...\n",163);
                 exit(0);
