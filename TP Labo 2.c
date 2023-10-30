@@ -76,6 +76,12 @@ char elegirPropiedad() {
     }
     return opcion;
 }
+
+void imprimirEncabezado(){
+    printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
+            124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
+}
+
 void imprimirPropiedad(propiedad_t prop){
      printf("%-3d%c%-9s%c%-18s%c%-17s%c%-13d%c%-7d%c%-11.2f%c%-14.2f%c%-10.2f%c%-8s%c%-11s%c%-19s%c%-8s%c%-7d\n",
            prop.id,124, prop.fecha_ingreso,124, prop.zona,124, prop.ciudad_barrio,124, prop.dormitorios,124, prop.banos,124,
@@ -98,8 +104,7 @@ void listarDat(FILE* propiedades){
     fflush (stdin);
     switch (opcion){
         case 'a': //todas las propiedades
-            printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
-            124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
+            imprimirEncabezado();
             for (int i = 1; i < total; i++){
                 fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
                 fread(&prop, sizeof(propiedad_t), 1, propiedades);
@@ -107,8 +112,7 @@ void listarDat(FILE* propiedades){
             }
             break;
         case 'b': //solo las activas
-            printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
-            124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
+            imprimirEncabezado();
             for (int i = 1; i < total; i++){
                 fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
                 fread(&prop, sizeof(propiedad_t), 1, propiedades);
@@ -119,8 +123,7 @@ void listarDat(FILE* propiedades){
             break;
         case 'c': //un tipo de propiedad
             op = elegirPropiedad();
-            printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
-            124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
+            imprimirEncabezado();
             for (int i = 1; i <= total; i++){
                 fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
                 fread(&prop, sizeof(propiedad_t),1, propiedades);
@@ -152,8 +155,7 @@ void listarDat(FILE* propiedades){
                 fflush(stdin);
             }
             aux_fin = convertirFecha (fecha_fin);
-            printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
-            124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
+            imprimirEncabezado();
             for (int i = 0; i < total; i++){
                 fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
                 fread(&prop, sizeof(propiedad_t),1, propiedades);
