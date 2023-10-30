@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include "validaciones.h"
 
+
 typedef struct Propiedad {
     int id;
     char fecha_ingreso[9];
@@ -77,10 +78,33 @@ char elegirPropiedad() {
     return opcion;
 }
 void imprimirPropiedad(propiedad_t prop){
-     printf("%-3d%c%-9s%c%-18s%c%-17s%c%-13d%c%-7d%c%-11.2f%c%-14.2f%c%-10.2f%c%-8s%c%-11s%c%-19s%c%-8s%c%-7d\n",
+     printf("%-3d%c%-9s%c%-6s%c%-15s%c%-13d%c%-7d%c%-11.2f%c%-14.2f%c%-10.2f%c%-8s%c%-11s%c%-11s%c%-8s%c%-7d\n",
            prop.id,124, prop.fecha_ingreso,124, prop.zona,124, prop.ciudad_barrio,124, prop.dormitorios,124, prop.banos,124,
            prop.superficie_total,124, prop.superficie_cubierta,124, prop.precio,124, prop.moneda,124, prop.tipo_propiedad,124,
            prop.operacion,124, prop.fecha_salida,124, prop.flag_activo);
+}
+void imprimirTodas(FILE * propiedades, propiedad_t prop, int totalReg){
+    //int total;
+    printf("ID %c Ingreso %c Zona %c Ciudad/Barrio %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c Operaci%cn %c Salida %c Activo\n",\
+    124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
+    for (int i = 1; i < totalReg; i++){
+        fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+        fread(&prop, sizeof(propiedad_t), 1, propiedades);
+        imprimirPropiedad(prop);
+    }
+}
+void imprimirActivo(FILE * propiedades, propiedad_t prop, int totalReg){
+    int total;
+    printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
+           124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
+
+    for (int i = 1; i < total; i++){
+        fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
+        fread(&prop, sizeof(propiedad_t), 1, propiedades);
+        if (prop.flag_activo == 1){
+            imprimirPropiedad(prop);
+        }
+    }
 }
 void listarDat(FILE* propiedades){
     char opcion, op, fecha_inicio[9], fecha_fin[9];
@@ -98,29 +122,15 @@ void listarDat(FILE* propiedades){
     fflush (stdin);
     switch (opcion){
         case 'a': //todas las propiedades
-            printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
-            124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
-            for (int i = 1; i < total; i++){
-                fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
-                fread(&prop, sizeof(propiedad_t), 1, propiedades);
-                imprimirPropiedad(prop);
-            }
+            imprimirTodas(propiedades, prop, total);
             break;
         case 'b': //solo las activas
-            printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
-            124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
-            for (int i = 1; i < total; i++){
-                fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
-                fread(&prop, sizeof(propiedad_t), 1, propiedades);
-                if (prop.flag_activo == 1){
-                    imprimirPropiedad(prop);
-                }
-            }
+            imprimirActivo(propiedades, prop, total);
             break;
         case 'c': //un tipo de propiedad
             op = elegirPropiedad();
-            printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
-            124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
+            printf("ID %c Ingreso %c Zona %c Ciudad/Barrio %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c Operaci%cn %c Salida %c Activo\n",\
+           124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
             for (int i = 1; i <= total; i++){
                 fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
                 fread(&prop, sizeof(propiedad_t),1, propiedades);
@@ -152,8 +162,8 @@ void listarDat(FILE* propiedades){
                 fflush(stdin);
             }
             aux_fin = convertirFecha (fecha_fin);
-            printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
-            124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
+            printf("ID %c Ingreso %c Zona %c Ciudad/Barrio %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c Operaci%cn %c Salida %c Activo\n",\
+           124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
             for (int i = 0; i < total; i++){
                 fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
                 fread(&prop, sizeof(propiedad_t),1, propiedades);
@@ -192,8 +202,8 @@ int ingresoID(char num[]) {
     printf("Ingrese el ID de la propiedad: ");
     scanf("%5s", num);
     fflush (stdin);
-    while (!validarInt(num)) {
-        printf("Opción inválida. Por favor, ingrese un número entero: ");
+    while (!validarInt(num) && num !=0) {
+        printf("Opción inv%clida. Por favor, ingrese un n%cmero entero: ",160, 163);
         scanf(" %5s", num);
         fflush (stdin);
     }
@@ -376,6 +386,47 @@ void altaPropiedad(FILE* propiedades){
     printf("Propiedad agregada exitosamente.\n");
 }
 
+//(PUNTO 9) Baja logica.
+/*busca una propiedad en el archivo segun ID (sin fecha de salida).
+emision de datos y confirmacion del usuario.
+cambia el campo "activo" a cero y lista todas las propiedades activas.*/
+void bajaLogica(FILE* propiedades){
+    int nReg, aux_id;
+    char opcion, id[6], cadAux[6] = "0";
+
+    propiedad_t busqueda;
+    printf ("--------------Baja l%cgica--------------\n", 162);
+    aux_id = ingresoID(id);
+
+    fseek(propiedades,0,SEEK_SET);
+    nReg = ftell(propiedades)/sizeof(propiedad_t);
+
+    if (aux_id <= nReg){
+        fseek(propiedades,(aux_id-1)*sizeof(propiedad_t),SEEK_SET);
+        fread(&busqueda,sizeof(propiedad_t),1,propiedades);
+        if (strcmp(busqueda.fecha_salida, cadAux) == 0){
+            printf ("%cEst%c seguro que quiere dar de baja a...?:\n",168,160);
+            imprimirPropiedad(busqueda);
+            printf ("S/N\n");
+            do{
+                scanf (" %c",&opcion);
+                fflush(stdin);
+                opcion = tolower(opcion);
+                if (opcion != 's' && opcion != 'n') {
+                    printf("La opci%cn es incorrecta, ingrese la opci%cn S/N.\n",162,162);}
+            } while (opcion != 's' && opcion != 'n');
+            if (opcion == 's') {
+                busqueda.flag_activo = 0;
+                imprimirActivo(propiedades, busqueda, nReg);
+            } else {
+                printf ("La baja ha sido cancelada con %cxito\n",130);
+            }
+        } else {
+            printf ("Error, el registro ya tiene una fecha de salida.\n",131,161);}
+    } else {
+        printf ("Error, no existe el ID ingresado\n");}
+}
+
 //(PUNTO 7) Busqueda de datos
 /*muestra un submenu de opciones.
 busca propiedades por ID o por operacion y luego tipo de propiedad.
@@ -466,8 +517,6 @@ void buscarPropiedad(FILE* propiedades){
 /*Permite modificar ciudad/barrio, precio o fecha de salida.
 Con la modificacion de la fecha de salida se modifica la baja logica
 Se validan las entradas del usuario y se pide una confirmación antes de modificar el registro.*/
-
-//VER INGRESO DE FECHA DE SALIDA CON BAJA FISICA
 void modificarPropiedad(FILE* propiedades){
     char num[20], letra[30], opcion, fecha[9];
     propiedad_t prop;
@@ -526,7 +575,21 @@ void modificarPropiedad(FILE* propiedades){
         printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
         break;
     }
+
 }
+
+//crea un archivo "propiedades_bajas_<fecha>.xyz" con la fecha actual.
+//en este graba todas las propiedades inactivas de "propiedades"
+//simultaneamente elimina esos registros de "propiedades"
+//devuelve un puntero activo al archivo de bajas.
+/*FILE* bajaFisica(FILE* propiedades){
+
+}*/
+
+//imprime los registros de bajasXyz con el formato correspondiente.
+/*void listarXyz(FILE* bajasXyz){
+
+}*/
 
 int main(){
     printf("%cBienvenido a Inmobiliaria Bub%c!\n", 173, 163);
