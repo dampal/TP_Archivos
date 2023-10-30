@@ -1,9 +1,6 @@
 /*Biblioteca personal que permite verificar los datos ingresados por usuario y operarlos,
 teniendo un menor margen de error.*/
 
-#include <time.h>
-#include <string.h>
-#include <ctype.h>
 
 #ifndef VALIDACIONES_H
 #define VALIDACIONES_H

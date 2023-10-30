@@ -22,7 +22,7 @@ typedef struct Propiedad {
     char operacion[20];
     char fecha_salida[9];
     int flag_activo;
-} propiedad_t;
+} propiedad_t;;
 
 //(PUNTO 4) Crea el archivo 'propiedades.dat'
 
@@ -117,7 +117,7 @@ void listarDat(FILE* propiedades){
     switch (opcion){
         case 'a': //todas las propiedades
             imprimirEncabezado();
-            for (int i = 1; i < total; i++){
+            for (int i = 0; i < total; i++){
                 fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
                 fread(&prop, sizeof(propiedad_t), 1, propiedades);
                 imprimirPropiedad(prop);
@@ -125,7 +125,7 @@ void listarDat(FILE* propiedades){
             break;
         case 'b': //solo las activas
             imprimirEncabezado();
-            for (int i = 1; i < total; i++){
+            for (int i = 0; i < total; i++){
                 fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
                 fread(&prop, sizeof(propiedad_t), 1, propiedades);
                 if (prop.flag_activo == 1){
@@ -136,7 +136,7 @@ void listarDat(FILE* propiedades){
         case 'c': //un tipo de propiedad
             op = elegirPropiedad();
             imprimirEncabezado();
-            for (int i = 1; i <= total; i++){
+            for (int i = 0; i <= total; i++){
                 fseek(propiedades, i*sizeof(propiedad_t), SEEK_SET);
                 fread(&prop, sizeof(propiedad_t),1, propiedades);
                 if (strcmp(prop.tipo_propiedad, "Casa") == 0 && op == 'c'){
@@ -208,14 +208,14 @@ llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.*/
 int ingresoID() {
     char id[20];
     printf("Ingrese el ID de la propiedad: ");
-    scanf("%5s", num);
+    scanf("%5s", id);
     fflush (stdin);
-    while (!validarInt(num) || (atoi(num)==0)) {
+    while (!validarInt(id) || (atoi(id)==0)) {
         printf("Opción inválida. Por favor, ingrese un número entero: ");
-        scanf(" %5s", num);
+        scanf(" %5s", id);
         fflush (stdin);
     }
-    return atoi(num);
+    return atoi(id);
 }
 
 // Pide al usuario una opción entre tipos de moneda
@@ -265,7 +265,7 @@ void altaPropiedad(FILE* propiedades){
     propiedad_t nuevo;
     propiedad_t dato;
     propiedad_t vacio = {0,"0","0","0",0,0,0,0,0,"0","0","0","0",0};
-    int id = 0, totalReg = 0, resul;
+    int id = 0, totalReg = 0;
     printf ("---------------Alta---------------\n");
     id = ingresoID();
     do {
@@ -294,7 +294,7 @@ void altaPropiedad(FILE* propiedades){
     printf("Ingrese la fecha de ingreso(formato: DDMMYYYY): ");
     scanf("%8s", fecha);
     fflush(stdin);
-    while (!validarFecha(fecha) && !compararFecha(fecha)) {
+    while (!validarFecha(fecha) || !compararFecha(fecha)) {
         printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
         scanf(" %8s", fecha);
         fflush(stdin);
@@ -403,6 +403,7 @@ void altaPropiedad(FILE* propiedades){
 
     //Guardo el nuevo struct en el lugar que corresponda
     /*si todo esta ok, la propiedad queda activa*/
+    strcpy(nuevo.fecha_salida,"0");
     nuevo.flag_activo = 1;
     fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
     fwrite(&nuevo, sizeof(propiedad_t), 1, propiedades);
@@ -561,7 +562,7 @@ void modificarPropiedad(FILE* propiedades){
         printf("Ingrese la fecha de salida(formato: DDMMYYYY): ");
         scanf("%8s", fecha);
         fflush(stdin);
-        while (!validarFecha(fecha) && !compararFecha(fecha)) {
+        while (!validarFecha(fecha) || !compararFecha(fecha)) {
             printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
             scanf(" %8s", fecha);
             fflush(stdin);
@@ -584,13 +585,21 @@ void listarXyz(FILE* bajasXyz){
     while((tamanio = fread(buffer,tamanio,sizeof(char),bajasXyz))>0){
         fwrite(buffer,tamanio,sizeof(char),stdout);
     }
-    return 0;
+}
+
+void generarNombreXyz(char nombre[]){
+    time_t fechaActual;
+    struct tm *fechaConvert;
+    time(&fechaActual);
+    fechaConvert = localtime(&fechaActual);
+    sprintf(nombre,"propiedades_bajas_%2d%2d%4d.xyz",fechaConvert->tm_mday,fechaConvert->tm_mon+1,fechaConvert->tm_year+1900);
 }
 
 int main(){
     printf("%cBienvenido a Inmobiliaria Bub%c!\n", 173, 163);
     FILE* propiedades = crearDat();
     fflush(stdin);
+    char nombreBaja[40];
     FILE* bajasXyz = NULL;
     while(1){
         mostrarMenu();
