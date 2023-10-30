@@ -1,5 +1,10 @@
 //Desarollo de las funciones propias para la libreria 'validaciones.h'
 
+#include <time.h>
+#include <string.h>
+#include <ctype.h>
+
+
 int validarInt (char num[]){
     for(int i=0; i<strlen(num); i++){
         if(!isdigit(num[i])){
