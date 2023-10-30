@@ -282,7 +282,7 @@ void bajaLogica(FILE* propiedades){
     fseek(propiedades,0,SEEK_SET);
     nReg=ftell(propiedades)/sizeof(propiedad_t);
 
-    if (id <= nReg){                                                            //si el id es valido y tiene un valor numerico, entonces ese registro no esta vacío
+    if (aux <= nReg){                                                            //si el id es valido y tiene un valor numerico, entonces ese registro no esta vacío
         fseek(propiedades,(aux-1)*sizeof(propiedad_t),SEEK_SET);
 
         fread(&busqueda,sizeof(propiedad_t),1,propiedades);
