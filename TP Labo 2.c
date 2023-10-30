@@ -650,6 +650,7 @@ void listarXyz(FILE* bajasXyz){
     }
 }
 
+
 void generarNombreXyz(char nombre[]){
     time_t fechaActual;
     struct tm *fechaConvert;
@@ -663,44 +664,34 @@ void generarNombreXyz(char nombre[]){
 //simultaneamente elimina esos registros de "propiedades"
 //devuelve un puntero activo al archivo de bajas.
 FILE* bajaFisica(FILE* propiedades) {
-    int nReg, aux_id;
+    int nReg;
     propiedad_t busqueda;
     propiedad_t vacio = {0, "0", "0", "0", 0, 0, 0, 0, 0, "0", "0", "0", "0", 0};
-    FILE* pArchivoBajas;
     char bajasNombre[40];
     generarNombreXyz(bajasNombre);
-    pArchivoBajas = fopen(bajasNombre, "a+");
+    FILE* pArchivoBajas = fopen(bajasNombre, "a+");
 
-    if (pArchivoBajas != NULL) {
-        fseek(pArchivoBajas, 0, SEEK_SET);
-        fseek(propiedades, 0, SEEK_END);
-
-        nReg = ftell(propiedades) / sizeof(propiedad_t);
-        aux_id = ingresoID();
-
-        if (aux_id <= nReg) {
-            fseek(propiedades, (aux_id - 1) * sizeof(propiedad_t), SEEK_SET);
-            fread(&busqueda, sizeof(propiedad_t), 1, propiedades);
-
+    if ((pArchivoBajas = fopen(bajasNombre, "a+"))==NULL) {
+        printf("Error en la apertura del archivo pArchivoBajas");
+        exit(1);
+    }
+    
+    fseek(propiedades, 0, SEEK_END);
+    nReg = ftell(propiedades) / sizeof(propiedad_t);
+    
+    for (int i = 0; i < nReg; i++){
+        fread(&busqueda, sizeof(propiedad_t), 1, propiedades);
+        if (busqueda.flag_activo == 0 && busqueda.id != 0){
             fprintf(pArchivoBajas, "%-3d %-9s %-18s %-17s %-13d %-7d %-11.2f %-14.2f %-10.2f %-8s %-11s %-19s %-8s %-7d\n",
                     busqueda.id, busqueda.fecha_ingreso, busqueda.zona, busqueda.ciudad_barrio, busqueda.dormitorios,
                     busqueda.banos, busqueda.superficie_total, busqueda.superficie_cubierta, busqueda.precio,
                     busqueda.moneda, busqueda.tipo_propiedad, busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
-
             fseek(propiedades, -sizeof(propiedad_t), SEEK_CUR);
             fwrite(&vacio, sizeof(propiedad_t), 1, propiedades);
-
-            fclose(pArchivoBajas);
-            return pArchivoBajas;
-        } else {
-            printf("Error, no existe el ID ingresado\n");
         }
-        fclose(pArchivoBajas);
-    } else {
-        printf("Error en la apertura del archivo pArchivoBajas");
     }
-
-    return NULL;
+    
+    return pArchivoBajas;
 }
 
 int main(){
