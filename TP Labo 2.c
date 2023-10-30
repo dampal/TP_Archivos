@@ -662,6 +662,105 @@ void bajaLogica(FILE* propiedades){
     }
 }
 
+//(PUNTO 9) Baja logica.
+//busca una propiedad en el archivo segun ID.
+//cambia el campo "fecha de salida" por la fecha actual.
+//cambia el campo "activo" a cero.
+void bajaLogica(FILE* propiedades){
+    int nReg,aux_id;
+    char opcion, cadAux[6] = "0";
+    propiedad_t busqueda;
+
+    aux_id = ingresoID();
+    fseek(propiedades, 0, SEEK_END);
+    nReg = ftell(propiedades)/sizeof(propiedad_t);
+    if (aux_id <= nReg){
+        fseek(propiedades,(aux_id-1)*sizeof(propiedad_t),SEEK_SET);
+        fread(&busqueda,sizeof(propiedad_t),1,propiedades);
+        if (strcmp(busqueda.fecha_salida, cadAux) == 1){
+            printf ("Est%c seguro que quiere dar de baja a:\n",160);
+            imprimirEncabezado();
+            imprimirPropiedad(busqueda);
+            printf ("S/N: ");
+            do{
+                scanf (" %c",&opcion);
+                fflush(stdin);
+                opcion = tolower(opcion);
+                if (opcion != 's' && opcion != 'n'){
+                    printf("La opci%cn es incorrecta, ingrese otra opci%cn (S/N).\n",162,162);
+                }
+            } while (opcion != 's' && opcion != 'n');
+            switch (opcion){
+                case 's':
+                    busqueda.flag_activo = 0;
+                    fseek(propiedades, - sizeof(propiedad_t),SEEK_CUR);
+                    fwrite(&busqueda,sizeof(propiedad_t),1,propiedades);
+                    fseek(propiedades,0,SEEK_SET);
+                    imprimirEncabezado();
+                    while (fread(&busqueda, sizeof(propiedad_t), 1, propiedades) == 1) {
+                        if (busqueda.flag_activo == 1) {
+                            imprimirPropiedad(busqueda);
+                        }
+                    }
+                    break;
+                case 'n':
+                    printf ("La baja ha sido cancelada con %cxito.\n",130);
+                    break;
+            }
+        } else {
+            printf ("Error, el registro ya tiene una fecha de salida\n",131,161);
+        }
+    } else {
+        printf ("Error, no existe el ID ingresado.\n");
+    }
+}
+
+//(PUNTO 10) Baja fisica.
+//crea un archivo "propiedades_bajas_<fecha>.xyz" con la fecha actual.
+//en este graba todas las propiedades inactivas de "propiedades"
+//simultaneamente elimina esos registros de "propiedades"
+//devuelve un puntero activo al archivo de bajas.
+FILE* bajaFisica(FILE* propiedades){
+
+    int nReg,aux_id;
+    propiedad_t busqueda;
+    propiedad_t vacio = {0,"0","0","0",0,0,0,0,0,"0","0","0","0",0};
+    FILE * pArchivoBajas;
+    pArchivoBajas = fopen("propiedades_bajas_<fecha>.xyz","a+");
+    aux_id = ingresoID();
+
+    if(pArchivoBajas != NULL){
+            fseek(pArchivoBajas,0,SEEK_SET);
+            fseek(propiedades,0,SEEK_SET);
+            nReg=ftell(propiedades)/sizeof(propiedad_t);
+            if (aux_id <= nReg){
+                fseek(propiedades,(aux_id-1)*sizeof(propiedad_t),SEEK_SET);
+                fread(&busqueda,sizeof(propiedad_t),1,propiedades);
+                fprintf(pArchivoBajas, "%-3d%c%-9s%c%-18s%c%-17s%c%-13d%c%-7d%c%-11.2f%c%-14.2f%c%-10.2f%c%-8s%c%-11s%c%-19s%c%-8s%c%-7d\n",\
+                    busqueda.id, busqueda.fecha_ingreso, busqueda.zona, busqueda.ciudad_barrio, busqueda.dormitorios,\
+                    busqueda.banos, busqueda.superficie_total, busqueda.superficie_cubierta, busqueda.precio, busqueda.moneda,\
+                    busqueda.tipo_propiedad, busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
+                fseek(propiedades, - sizeof(propiedad_t),SEEK_CUR);
+                fwrite(&vacio,sizeof(propiedad_t),1,propiedades);
+                return pArchivoBajas;
+            } else {
+                printf ("Error, no existe el ID ingresado\n");}
+    fclose(pArchivoBajas);
+    } else printf("Error en la apertura del archivo\n");
+}
+
+//(PUNTO 11) Listado de propiedades con baja fisica.
+//imprime los registros de bajasXyz con el formato correspondiente.
+void listarXyz(FILE* bajasXyz){
+    int tamanio = 100;
+    char buffer[100];
+    imprimirEncabezado();
+    while((tamanio = fread(buffer,tamanio,sizeof(char),bajasXyz))>0){
+        fwrite(buffer,tamanio,sizeof(char),stdout);
+    }
+    return 0;
+}
+
 int main(){
     printf("%cBienvenido a Inmobiliaria Bub%c!\n", 173, 163);
     FILE* propiedades = crearDat();
@@ -689,10 +788,10 @@ int main(){
                 bajaLogica(propiedades);
                 break;
             case 'f':
-                //bajasXyz = bajaFisica(propiedades);
+                bajasXyz = bajaFisica(propiedades);
                 break;
             case 'g':
-                //listarXyz(bajasXyz);
+                listarXyz(bajasXyz);
                 break;
             case 'h':
             //cerrar el archivo y salir del programa
