@@ -25,8 +25,9 @@ typedef struct Propiedad {
 } propiedad_t;
 
 //(PUNTO 4) Crea el archivo 'propiedades.dat'
-/*crea o sobreescribe el existente
-si no, tira error y termina la ejecución del programa.*/
+
+// Crea, sobreescribe, o abre el archivo existente "propiedades.dat" segun el input del usuario.
+// Si no puede abrirlo, imprime un error y termina la ejecución del programa.
 FILE * crearDat(){
     FILE * propiedades;
     char opcion;
@@ -60,7 +61,10 @@ FILE * crearDat(){
 }
 
 //(PUNTO 5) Listado del contenido del archivo
-/*imprime una propiedad con el formato correspondiente.*/
+
+// Pide al usuario una opción entre 3 tipos de propiedad
+// si es una opción válida, devuelve el caracter ingresado
+// si no, pide un ingreso nuevamente.
 char elegirPropiedad() {
     char opcion;
     printf("Tipo de propiedad:\n[C]. Casa\n[D]. Departamento\n[P]. PH\n");
@@ -77,17 +81,25 @@ char elegirPropiedad() {
     return opcion;
 }
 
+
+// Imprime el encabezado correspondiente a los campos de el struct propiedad por pantalla.
 void imprimirEncabezado(){
     printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
             124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
 }
 
+// recibe una variable de tipo struct propiedades (propiedad_t)
+// la imprime con el formato correspondiente por pantalla
 void imprimirPropiedad(propiedad_t prop){
      printf("%-3d%c%-9s%c%-18s%c%-17s%c%-13d%c%-7d%c%-11.2f%c%-14.2f%c%-10.2f%c%-8s%c%-11s%c%-19s%c%-8s%c%-7d\n",
            prop.id,124, prop.fecha_ingreso,124, prop.zona,124, prop.ciudad_barrio,124, prop.dormitorios,124, prop.banos,124,
            prop.superficie_total,124, prop.superficie_cubierta,124, prop.precio,124, prop.moneda,124, prop.tipo_propiedad,124,
            prop.operacion,124, prop.fecha_salida,124, prop.flag_activo);
 }
+
+// recibe un puntero abierto al archivo binario 'propiedades'
+// segun la opción elegida por el usuario, recorre el archivo en bloques de tamaño propiedad_t
+// imprime por pantalla los registros que cumplan con las condiciones elegidas por el usuario.
 void listarDat(FILE* propiedades){
     char opcion, op, fecha_inicio[9], fecha_fin[9];
     int aux_fecha, aux_inicio, aux_fin;
@@ -171,7 +183,7 @@ void listarDat(FILE* propiedades){
     }
 }
 
-//(PUNTO 1) Impresion con formato del menu principal.
+//(PUNTO 1) Impresión con formato del menú principal.
 void mostrarMenu(){
     printf ("--------Men%c Inicial--------\n",163);
     printf ("[a]. Listar propiedades.\n");
@@ -190,17 +202,25 @@ void mostrarMenu(){
 valida la entrada de cada campo, y pide entradas nuevas hasta que sea correcta.
 llena los IDs entre el ultimo registro lleno y el nuevo con registros vacíos.*/
 
-int ingresoID(char num[]) {
+// recibe un string
+// valida que el string contenga solamente la representación de un numero entero
+// devuelve dicho número como int
+int ingresoID() {
+    char id[20];
     printf("Ingrese el ID de la propiedad: ");
     scanf("%5s", num);
     fflush (stdin);
-    while (!validarInt(num)) {
+    while (!validarInt(num) || (atoi(num)==0)) {
         printf("Opción inválida. Por favor, ingrese un número entero: ");
         scanf(" %5s", num);
         fflush (stdin);
     }
     return atoi(num);
 }
+
+// Pide al usuario una opción entre tipos de moneda
+// si es una opción válida, devuelve el caracter ingresado
+// si no, pide un ingreso nuevamente.
 char elegirMoneda(){
     char opcion;
     printf("Moneda de la propiedad:\n[A]. ARS\n[U]. USD\n");
@@ -216,6 +236,10 @@ char elegirMoneda(){
     }
     return opcion;
 }
+
+// Pide al usuario una opción entre 3 tipos de operación inmobiliaria
+// si es una opción válida, devuelve el caracter ingresado
+// si no, pide un ingreso nuevamente.
 char elegirOperacion() {
     char opcion;
     printf("Tipo de operacion:\n[V]. Venta\n[A]. Alquiler\n[T]. Alquiler Temporal\n");
@@ -230,6 +254,12 @@ char elegirOperacion() {
     return opcion;
 }
 
+// Recibe un puntero abierto a un archivo binario 'propiedades'
+// Pide un ID al usuario. De ser un ID valido chequea si la posición ID * sizeof(struct propiedad) está ocupada.
+// Si el ID supera el la cantidad maxima de struct propiedad existentes en el archivo,
+// genera y escribe 'struct propiedad' vacíos hasta alcanzar la ubicación correspondiente al ID pedido.
+// Si el ID está disponible, le pide al usuario los datos necesarios para llenar un struct propiedad y los valida.
+// Guarda dicho struct en la posición correspondiente con su campo 'activo' en 1.
 void altaPropiedad(FILE* propiedades){
     char num[20], fecha[9], letra[30];
     propiedad_t nuevo;
@@ -237,7 +267,7 @@ void altaPropiedad(FILE* propiedades){
     propiedad_t vacio = {0,"0","0","0",0,0,0,0,0,"0","0","0","0",0};
     int id = 0, totalReg = 0, resul;
     printf ("---------------Alta---------------\n");
-    id = ingresoID(num);
+    id = ingresoID();
     do {
         fseek(propiedades, 0, SEEK_END);
         totalReg = ftell(propiedades) / sizeof(propiedad_t);
@@ -246,7 +276,7 @@ void altaPropiedad(FILE* propiedades){
             fread (&dato, sizeof(propiedad_t), 1, propiedades);
             if (dato.id != 0){
                 printf("La posici%cn %d ya est%c ocupada.\n", 162, id, 160);
-                id = ingresoID(num);
+                id = ingresoID();
             } else {
                 nuevo.id = id;
             }
@@ -380,15 +410,14 @@ void altaPropiedad(FILE* propiedades){
 }
 
 //(PUNTO 7) Busqueda de datos
-/*muestra un submenu de opciones.
-busca propiedades por ID o por operacion y luego tipo de propiedad.
-emite los datos encontrados, o un mensaje si no se encuentra nada.*/
+// Recibe un puntero abierto a un archivo 'propiedades'
+// Busca propiedades por ID (acceso directo)
+// Emite los datos encontrados, o un mensaje en caso de no encontrar nada
 void buscarPorID(FILE * propiedades){
     int nReg = 0, aux_id = 0;
-    char id[6];
     propiedad_t busqueda;
 
-    aux_id = ingresoID(id);
+    aux_id = ingresoID();
 
     fseek(propiedades, 0, SEEK_END);
     nReg = ftell(propiedades)/sizeof(propiedad_t);
@@ -406,6 +435,11 @@ void buscarPorID(FILE * propiedades){
         printf ("Error, no existe el ID ingresado\n");
         }
 }
+
+// Recibe un puntero abierto a un archivo 'propiedades'
+// Muestra un submenu de opciones.
+// Busca propiedades por operación y luego por tipo de propiedad (secuencialmente).
+// emite los datos encontrados, o un mensaje de no encontrar nada..
 void buscarPorOp(FILE * propiedades){
     char operacion, propiedad;
     propiedad_t regBuscar,regArchivo;
@@ -442,6 +476,12 @@ void buscarPorOp(FILE * propiedades){
         }
     }
 }
+
+// Recibe un puntero abierto a un archivo 'propiedades'
+// Muestra un submenu de opciones.
+// Busca propiedades por ID (acceso directo)
+// o por operación y luego por tipo de propiedad (secuencialmente).
+// emite los datos encontrados, o un mensaje de no encontrar nada..
 void buscarPropiedad(FILE* propiedades){
     char subopcion;
     printf ("---------------B%csqueda---------------\n", 163);
@@ -466,16 +506,18 @@ void buscarPropiedad(FILE* propiedades){
 }
 
 //(PUNTO 8) Modificar datos
-/*Permite modificar ciudad/barrio, precio o fecha de salida.
-Con la modificacion de la fecha de salida se modifica la baja logica
-Se validan las entradas del usuario y se pide una confirmación antes de modificar el registro.*/
+
+// Recibe un puntero abierto a un archivo binario.
+// Permite modificar ciudad/barrio, precio o fecha de salida de un registro.
+// Con la modificacion de la fecha de salida se modifica la baja logica
+// Se validan las entradas del usuario y se pide una confirmación antes de modificar el registro.
 
 //VER INGRESO DE FECHA DE SALIDA CON BAJA FISICA
 void modificarPropiedad(FILE* propiedades){
     char num[20], letra[30], opcion, fecha[9];
     propiedad_t prop;
     printf ("------------Modificar------------\n");
-    int id = ingresoID(num);
+    int id = ingresoID();
     fseek (propiedades, (id-1)*sizeof (propiedad_t), SEEK_SET);
     fread (&prop, sizeof(propiedad_t), 1, propiedades);
     printf ("Usted va a modificar la siguiente propiedad:\n");
