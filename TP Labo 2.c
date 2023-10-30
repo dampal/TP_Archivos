@@ -255,6 +255,7 @@ void altaPropiedad(FILE* propiedades){
             fseek(propiedades, 0, SEEK_END);
             for (int i = 0; i < filasInt ; i++){
                 fwrite(&vacio, sizeof(propiedad_t),1,propiedades);
+                fseek(propiedades, 0, SEEK_END);
             }
             nuevo.id = id;
         }
