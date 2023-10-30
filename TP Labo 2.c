@@ -611,10 +611,10 @@ int main(){
                 modificarPropiedad(propiedades);
                 break;
             case 'e':
-                bajaLogica(propiedades);
+                //bajaLogica(propiedades);
                 break;
             case 'f':
-                bajasXyz = bajaFisica(propiedades);
+                //bajasXyz = bajaFisica(propiedades);
                 break;
             case 'g':
                 listarXyz(bajasXyz);

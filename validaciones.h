@@ -16,7 +16,7 @@ int validarInt(char id[]);
 // Recibe un string
 // Chequea que contenga sólo valores reales positivos, con separador decimal '.'
 // Devuelve 1 en caso de ser correcto, 0 si no lo es
-int validarFloat(char flotante[])
+int validarFloat(char flotante[]);
 
 // Recibe un string que contiene una fecha en formato DDMMYYYY
 // chequea si esa fecha es una fecha válida, teniendo en cuenta cantidad de dias por mes y años bisiestos.
