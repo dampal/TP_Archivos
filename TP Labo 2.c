@@ -428,6 +428,7 @@ void buscarPorID(FILE * propiedades){
         fread(&busqueda,sizeof(propiedad_t),1,propiedades);
 
         if (busqueda.id == aux_id){
+            imprimirEncabezado();
             imprimirPropiedad(busqueda);
         } else {
             printf ("Error, el registro est%c vac%co.\n",131,161);}
@@ -454,6 +455,7 @@ void buscarPorOp(FILE * propiedades){
     }
     fseek(propiedades,0,SEEK_SET);
     printf ("Filtro por Operaci%cn\n",162);
+    imprimirEncabezado();
     while (fread(&regBuscar, sizeof(propiedad_t), 1, propiedades) == 1) {
         if (strcmp(regBuscar.operacion, regArchivo.operacion) == 0) {
             imprimirPropiedad(regBuscar);
@@ -470,6 +472,7 @@ void buscarPorOp(FILE * propiedades){
     }
     fseek(propiedades,0,SEEK_SET);
     printf ("Filtro por Operaci%cn y por Propiedad\n",162);
+    imprimirEncabezado();
     while (fread(&regBuscar, sizeof(propiedad_t), 1, propiedades) == 1) {
         if (strcmp(regBuscar.operacion, regArchivo.operacion) == 0 && strcmp(regBuscar.tipo_propiedad, regArchivo.tipo_propiedad) == 0) {
             imprimirPropiedad(regBuscar);
@@ -521,6 +524,7 @@ void modificarPropiedad(FILE* propiedades){
     fseek (propiedades, (id-1)*sizeof (propiedad_t), SEEK_SET);
     fread (&prop, sizeof(propiedad_t), 1, propiedades);
     printf ("Usted va a modificar la siguiente propiedad:\n");
+    imprimirEncabezado();
     imprimirPropiedad(prop);
     printf("Ingrese que modificacion desea hacer:\n[a]. Ciudad/barrio.\n[b]. Precio.\n[c]. Fecha de salida.\n");
     scanf(" %c", &opcion);
@@ -580,6 +584,7 @@ int main(){
     FILE* bajasXyz = NULL;
     while(1){
         mostrarMenu();
+        fflush(stdin);
         char input = getchar();
         input = tolower(input);
         switch (input) {
