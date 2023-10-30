@@ -10,7 +10,6 @@
 typedef struct Propiedad {
     int id;
     char fecha_ingreso[9];
-    char fecha_salida[9];
     char zona[30];
     char ciudad_barrio[30];
     int dormitorios;
@@ -21,8 +20,9 @@ typedef struct Propiedad {
     char moneda[6];
     char tipo_propiedad[20];
     char operacion[20];
+    char fecha_salida[9];
     int flag_activo;
-} propiedad_t;;
+} propiedad_t;
 
 //(PUNTO 4) Crea el archivo 'propiedades.dat'
 
@@ -79,7 +79,7 @@ char elegirPropiedad() {
         opcion = tolower (opcion);
     }
     return opcion;
-    
+
 }
 
 
@@ -154,7 +154,7 @@ void listarDat(FILE* propiedades){
             scanf("%8s", fecha_inicio);
             fflush(stdin);
             while (!validarFecha(fecha_inicio)) {
-                printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
+                printf("Opci%cn inv%clida. Por favor, ingrese una fecha con formato DDMMYYYY: ", 162, 160);
                 scanf(" %8s", fecha_inicio);
                 fflush(stdin);
             }
@@ -163,7 +163,7 @@ void listarDat(FILE* propiedades){
             scanf("%8s", fecha_fin);
             fflush(stdin);
             while (!validarFecha(fecha_fin)) {
-                printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
+                printf("Opci%cn inv%clida. Por favor, ingrese una fecha con formato DDMMYYYY: ", 162, 160);
                 scanf(" %8s", fecha_fin);
                 fflush(stdin);
             }
@@ -195,7 +195,7 @@ void mostrarMenu(){
     printf ("[f]. Baja fisica de una propiedad.\n");
     printf ("[g]. Listar baja fisica de propiedades.\n");
     printf ("[h]. Salir.\n");
-    
+
 }
 
 //(PUNTO 3) Validacion de los datos ingresados
@@ -213,7 +213,7 @@ int ingresoID() {
     scanf("%5s", id);
     fflush (stdin);
     while (!validarInt(id) || (atoi(id)==0)) {
-        printf("Opción inválida. Por favor, ingrese un número entero: ");
+        printf("Opci%cn inv%clida. Por favor, ingrese un n%cmero entero: ",162,160,163);
         scanf(" %5s", id);
         fflush (stdin);
     }
@@ -405,10 +405,10 @@ void altaPropiedad(FILE* propiedades){
 
     //Guardo el nuevo struct en el lugar que corresponda
     /*si todo esta ok, la propiedad queda activa*/
-    
+
     strcpy(nuevo.fecha_salida,"0");
     nuevo.flag_activo = 1;
-    
+
     fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
     fwrite(&nuevo, sizeof(propiedad_t), 1, propiedades);
     printf("Propiedad agregada exitosamente.\n");
@@ -426,7 +426,7 @@ void buscarPorID(FILE * propiedades){
 
     fseek(propiedades, 0, SEEK_END);
     nReg = ftell(propiedades)/sizeof(propiedad_t);
-    
+
     if (aux_id <= nReg){
         fseek(propiedades,(aux_id-1)*sizeof(propiedad_t),SEEK_SET);
         fread(&busqueda,sizeof(propiedad_t),1,propiedades);
@@ -438,7 +438,7 @@ void buscarPorID(FILE * propiedades){
     } else {
         printf ("Error, no existe el ID ingresado\n");
         }
-        
+}
 //busca una propiedad en el archivo segun ID.
 //cambia el campo "fecha de salida" por la fecha actual.
 //cambia el campo "activo" a cero.
@@ -471,8 +471,8 @@ void bajaLogica(FILE* propiedades){
             switch (opcion){
                 case 's':
                     busqueda.flag_activo = 0;
-                    fseek(propiedades, - sizeof(propiedad_t),SEEK_CUR);
-                    fwrite(&busqueda,sizeof(propiedad_t),1,propiedades);
+                    fseek(propiedades,-sizeof(propiedad_t),SEEK_CUR);
+                    fwrite(&busqueda, sizeof(propiedad_t),1,propiedades);
                     fseek(propiedades,0,SEEK_SET);
                     imprimirEncabezado();
                     while (fread(&busqueda, sizeof(propiedad_t), 1, propiedades) == 1) {
@@ -486,7 +486,7 @@ void bajaLogica(FILE* propiedades){
                     break;
             }
         } else {
-            printf ("Error, el registro ya tiene una fecha de salida\n",131,161);
+            printf ("Error, el registro ya tiene una fecha de salida\n");
         }
     } else {
         printf ("Error, no existe el ID ingresado.\n");
@@ -538,51 +538,8 @@ void buscarPorOp(FILE * propiedades){
         if (flag2 == 0){
             printf ("No se hallaron resultados en b%csqueda por Propiedad\n",163);
         }
-    } else{ 
-        printf ("No se encontr%c la Operaci%cn a buscar\n",162,162); 
-    }
-}
-
-// Recibe un puntero abierto a un archivo 'propiedades'
-// Muestra un submenu de opciones.
-// Busca propiedades por operación y luego por tipo de propiedad (secuencialmente).
-// emite los datos encontrados, o un mensaje de no encontrar nada..
-void buscarPorOp(FILE * propiedades){
-    char operacion, propiedad;
-    propiedad_t regBuscar,regArchivo;
-
-    operacion = elegirOperacion();
-    if (operacion == 'v'){
-        strcpy (regArchivo.operacion, "Venta");
-    } else if (operacion == 'a') {
-        strcpy (regArchivo.operacion, "Alquiler");
-    } else {
-        strcpy (regArchivo.operacion, "Alquiler temporal");
-    }
-    fseek(propiedades,0,SEEK_SET);
-    printf ("Filtro por Operaci%cn\n",162);
-    imprimirEncabezado();
-    while (fread(&regBuscar, sizeof(propiedad_t), 1, propiedades) == 1) {
-        if (strcmp(regBuscar.operacion, regArchivo.operacion) == 0) {
-            imprimirPropiedad(regBuscar);
-        }
-    }
-
-    propiedad = elegirPropiedad();
-    if (propiedad == 'c'){
-        strcpy (regArchivo.tipo_propiedad, "Casa");
-    } else if (propiedad == 'd') {
-        strcpy (regArchivo.tipo_propiedad, "Depto.");
-    } else {
-        strcpy (regArchivo.tipo_propiedad, "PH");
-    }
-    fseek(propiedades,0,SEEK_SET);
-    printf ("Filtro por Operaci%cn y por Propiedad\n",162);
-    imprimirEncabezado();
-    while (fread(&regBuscar, sizeof(propiedad_t), 1, propiedades) == 1) {
-        if (strcmp(regBuscar.operacion, regArchivo.operacion) == 0 && strcmp(regBuscar.tipo_propiedad, regArchivo.tipo_propiedad) == 0) {
-            imprimirPropiedad(regBuscar);
-        }
+    } else{
+        printf ("No se encontr%c la Operaci%cn a buscar\n",162,162);
     }
 }
 
@@ -710,7 +667,9 @@ FILE* bajaFisica(FILE* propiedades) {
     propiedad_t busqueda;
     propiedad_t vacio = {0, "0", "0", "0", 0, 0, 0, 0, 0, "0", "0", "0", "0", 0};
     FILE* pArchivoBajas;
-    pArchivoBajas = fopen("propiedades_bajas_fecha.xyz", "a+");
+    char bajasNombre[40];
+    generarNombreXyz(bajasNombre);
+    pArchivoBajas = fopen(bajasNombre, "a+");
 
     if (pArchivoBajas != NULL) {
         fseek(pArchivoBajas, 0, SEEK_SET);
@@ -769,10 +728,10 @@ int main(){
                 modificarPropiedad(propiedades);
                 break;
             case 'e':
-                //bajaLogica(propiedades);
+                bajaLogica(propiedades);
                 break;
             case 'f':
-                //bajasXyz = bajaFisica(propiedades);
+                bajasXyz = bajaFisica(propiedades);
                 break;
             case 'g':
                 listarXyz(bajasXyz);
