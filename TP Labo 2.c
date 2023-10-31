@@ -585,60 +585,79 @@ void modificarPropiedad(FILE* propiedades){
     propiedad_t prop;
     printf ("------------Modificar------------\n");
     int id = ingresoID();
-    fseek (propiedades, (id-1)*sizeof (propiedad_t), SEEK_SET);
-    fread (&prop, sizeof(propiedad_t), 1, propiedades);
-    printf ("Usted va a modificar la siguiente propiedad:\n");
-    imprimirEncabezado();
-    imprimirPropiedad(prop);
-    printf("Ingrese que modificacion desea hacer:\n[a]. Ciudad/barrio.\n[b]. Precio.\n[c]. Fecha de salida.\n");
-    scanf(" %c", &opcion);
-    fflush(stdin);
-    opcion = tolower (opcion);
-    switch (opcion){
-    case 'a':
-        printf ("Ingrese la nueva ciudad/barrio de la propiedad: ");
-        gets(letra);
-        while (!validarTexto(letra)){
-            printf("Opci%cn inv%clida. Por favor, ingrese una ciudad/barrio v%clida: ", 162,160, 160);
-            gets(letra);
-        }
-        validarMayus(letra);
-        strcpy(prop.ciudad_barrio, letra);
-        fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
-        fwrite(&prop, sizeof(propiedad_t), 1, propiedades);
-        printf("Modificaci%cn exitosa.\n",162);
-        break;
-    case 'b':
-        printf ("Ingrese el precio de la propiedad: ");
-        scanf (" %19s", num);
-        while (!validarFloat(num)){
-            printf("Opci%cn inv%clida. Por favor, ingrese un precio v%clido(agregando '.'): ", 162,160, 160);
-            scanf(" %19s", num);
-        }
-        float precio_nuevo = atof(num);
-        prop.precio = precio_nuevo;
-        fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
-        fwrite(&prop, sizeof(propiedad_t), 1, propiedades);
-        printf("Modificaci%cn exitosa.\n",162);
-        break;
-    case 'c':
-        printf("Ingrese la fecha de salida(formato: DDMMYYYY): ");
-        scanf("%8s", fecha);
-        fflush(stdin);
-        while (!validarFecha(fecha) || !compararFecha(fecha)) {
-            printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
-            scanf(" %8s", fecha);
+    fseek(propiedades, 0, SEEK_END);
+    int totalReg = ftell(propiedades)/sizeof(propiedad_t);
+    if (id <= totalReg){
+        fseek (propiedades, (id-1)*sizeof (propiedad_t), SEEK_SET);
+        fread (&prop, sizeof(propiedad_t), 1, propiedades);
+        if (prop.id != 0){
+            printf ("Usted va a modificar la siguiente propiedad:\n");
+            imprimirEncabezado();
+            imprimirPropiedad(prop);
+            printf("Ingrese que modificacion desea hacer:\n[a]. Ciudad/barrio.\n[b]. Precio.\n[c]. Fecha de salida.\n");
+            scanf(" %c", &opcion);
             fflush(stdin);
+            opcion = tolower (opcion);
+            switch (opcion){
+            case 'a':
+                printf ("Ingrese la nueva ciudad/barrio de la propiedad: ");
+                gets(letra);
+                while (!validarTexto(letra)){
+                    printf("Opci%cn inv%clida. Por favor, ingrese una ciudad/barrio v%clida: ", 162,160, 160);
+                    gets(letra);
+                }
+                validarMayus(letra);
+                strcpy(prop.ciudad_barrio, letra);
+                fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
+                fwrite(&prop, sizeof(propiedad_t), 1, propiedades);
+                printf("Modificaci%cn exitosa.\n",162);
+                break;
+            case 'b':
+                printf ("Ingrese el precio de la propiedad: ");
+                scanf (" %19s", num);
+                fflush(stdin);
+                while (!validarFloat(num)){
+                    printf("Opci%cn inv%clida. Por favor, ingrese un precio v%clido(agregando '.'): ", 162,160, 160);
+                    scanf(" %19s", num);
+                    fflush(stdin);
+                }
+                float precio_nuevo = atof(num);
+                prop.precio = precio_nuevo;
+                char opcionMoneda = elegirMoneda();
+                if (opcionMoneda == 'a') {
+                strcpy(prop.moneda, "PESOS");
+                } else {
+                strcpy(prop.moneda, "USD");
+                }
+
+                fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
+                fwrite(&prop, sizeof(propiedad_t), 1, propiedades);
+                printf("Modificaci%cn exitosa.\n",162);
+                break;
+            case 'c':
+                printf("Ingrese la fecha de salida(formato: DDMMYYYY): ");
+                scanf(" %8s", fecha);
+                fflush(stdin);
+                while (!validarFecha(fecha) && !compararFecha(fecha)) {
+                    printf("Opción inválida. Por favor, ingrese una fecha con formato DDMMYYYY: ");
+                    scanf(" %8s", fecha);
+                    fflush(stdin);
+                }
+                strcpy(prop.fecha_salida, fecha);
+                prop.flag_activo = 0;
+                fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
+                fwrite(&prop, sizeof(propiedad_t), 1, propiedades);
+                printf("Modificaci%cn exitosa.\n",162);
+                break;
+            default:
+                printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
+                break;
+            }
+        } else {
+            printf("Este registro est%c vac%co.\n", 160,161);
         }
-        strcpy(prop.fecha_salida, fecha);
-        prop.flag_activo = 0;
-        fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
-        fwrite(&prop, sizeof(propiedad_t), 1, propiedades);
-        printf("Modificaci%cn exitosa.\n",162);
-        break;
-    default:
-        printf("Opci%cn inv%clida. Int%cntelo de nuevo.\n", 162, 160, 130);
-        break;
+    } else {
+        printf("El ID no se encuentra en el archivo.\n");
     }
 }
 
