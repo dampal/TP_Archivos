@@ -670,7 +670,7 @@ void generarNombreXyz(char nombre[]){
 }
 
 void listarXyz(){
-    char filename[30];
+    char filename[40];
     generarNombreXyz(filename);
     FILE* bajasXyz = fopen(filename,"r");
     if (bajasXyz == NULL){
@@ -682,7 +682,7 @@ void listarXyz(){
     while((caracter=fgetc(bajasXyz))!=EOF){
         printf("%c",caracter);
     }
-    fclose(filename);
+    fclose(bajasXyz);
 }
 
 //crea un archivo "propiedades_bajas_<fecha>.xyz" con la fecha actual.
@@ -690,13 +690,12 @@ void listarXyz(){
 //simultaneamente elimina esos registros de "propiedades"
 //devuelve un puntero activo al archivo de bajas.
 FILE* bajaFisica(FILE* propiedades) {
+    FILE* pArchivoBajas;
     int nReg;
     propiedad_t busqueda;
     propiedad_t vacio = {0, "0", "0", "0", 0, 0, 0, 0, 0, "0", "0", "0", "0", 0};
     char bajasNombre[40];
     generarNombreXyz(bajasNombre);
-    FILE* pArchivoBajas = fopen(bajasNombre, "a+");
-
     if ((pArchivoBajas = fopen(bajasNombre, "a+"))==NULL) {
         printf("Error en la apertura del archivo pArchivoBajas");
         exit(1);
@@ -709,15 +708,15 @@ FILE* bajaFisica(FILE* propiedades) {
         fread(&busqueda, sizeof(propiedad_t), 1, propiedades);
         if (busqueda.flag_activo == 0 && busqueda.id != 0){
             fprintf(pArchivoBajas, "%-3d %-9s %-18s %-17s %-13d %-7d %-11.2f %-14.2f %-10.2f %-8s %-11s %-19s %-8s %-7d\n",
-                    busqueda.id, busqueda.fecha_ingreso, busqueda.zona, busqueda.ciudad_barrio, busqueda.dormitorios,
-                    busqueda.banos, busqueda.superficie_total, busqueda.superficie_cubierta, busqueda.precio,
-                    busqueda.moneda, busqueda.tipo_propiedad, busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
+                    busqueda.id, busqueda.fecha_ingreso, busqueda.zona, busqueda.ciudad_barrio, busqueda.dormitorios,busqueda.banos,
+                    busqueda.superficie_total, busqueda.superficie_cubierta, busqueda.precio,busqueda.moneda, busqueda.tipo_propiedad,
+                    busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
             fseek(propiedades, -sizeof(propiedad_t), SEEK_CUR);
             fwrite(&vacio, sizeof(propiedad_t), 1, propiedades);
         }
     }
 
-    return pArchivoBajas;
+    fclose(pArchivoBajas);
 }
 
 int main(){
