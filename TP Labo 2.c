@@ -85,14 +85,14 @@ char elegirPropiedad() {
 
 // Imprime el encabezado correspondiente a los campos de el struct propiedad por pantalla.
 void imprimirEncabezado(){
-    printf("ID %c Ingreso %c       Zona       %c  Ciudad/Barrio  %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio  %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
+    printf("ID %c Ingreso %c         Zona       %c  Ciudad/Barrio          %c Dormitorios %c Ba%cos %c Sup.Total %c Sup.Cubierta %c  Precio       %c Moneda %c Propiedad %c     Operaci%cn     %c Salida %c Activo\n",\
             124,124,124,124,124,164,124,124,124,124,124,124,162,124,124);
 }
 
 // recibe una variable de tipo struct propiedades (propiedad_t)
 // la imprime con el formato correspondiente por pantalla
 void imprimirPropiedad(propiedad_t prop){
-     printf("%-3d%c%-9s%c%-18s%c%-17s%c%-13d%c%-7d%c%-11.2f%c%-14.2f%c%-10.2f%c%-8s%c%-11s%c%-19s%c%-8s%c%-7d\n",
+     printf("%-3d%c%-9s%c%-20s%c%-25s%c%-13d%c%-7d%c%-11.2f%c%-14.2f%c%-15.2f%c%-8s%c%-11s%c%-19s%c%-8s%c%-7d\n",
            prop.id,124, prop.fecha_ingreso,124, prop.zona,124, prop.ciudad_barrio,124, prop.dormitorios,124, prop.banos,124,
            prop.superficie_total,124, prop.superficie_cubierta,124, prop.precio,124, prop.moneda,124, prop.tipo_propiedad,124,
            prop.operacion,124, prop.fecha_salida,124, prop.flag_activo);
@@ -631,6 +631,7 @@ void modificarPropiedad(FILE* propiedades){
             fflush(stdin);
         }
         strcpy(prop.fecha_salida, fecha);
+        prop.flag_activo = 0;
         fseek (propiedades, (id-1)*sizeof(propiedad_t), SEEK_SET);
         fwrite(&prop, sizeof(propiedad_t), 1, propiedades);
         printf("Modificaci%cn exitosa.\n",162);
@@ -641,22 +642,28 @@ void modificarPropiedad(FILE* propiedades){
     }
 }
 
-void listarXyz(FILE* bajasXyz){
-    int tamanio = 100;
-    char buffer[100];
-    imprimirEncabezado();
-    while((tamanio = fread(buffer,tamanio,sizeof(char),bajasXyz))>0){
-        fwrite(buffer,tamanio,sizeof(char),stdout);
-    }
-}
-
-
 void generarNombreXyz(char nombre[]){
     time_t fechaActual;
     struct tm *fechaConvert;
     time(&fechaActual);
     fechaConvert = localtime(&fechaActual);
     sprintf(nombre,"propiedades_bajas_%2d%2d%4d.xyz",fechaConvert->tm_mday,fechaConvert->tm_mon+1,fechaConvert->tm_year+1900);
+}
+
+void listarXyz(){
+    char filename[30];
+    generarNombreXyz(filename);
+    FILE* bajasXyz = fopen(filename,"r");
+    if (bajasXyz == NULL){
+                printf ("Error en la apertura del archivo\n");
+                exit (1);
+    }
+    imprimirEncabezado();
+    char caracter;
+    while((caracter=fgetc(bajasXyz))!=EOF){
+        printf("%c",caracter);
+    }
+    fclose(filename);
 }
 
 //crea un archivo "propiedades_bajas_<fecha>.xyz" con la fecha actual.
@@ -675,14 +682,14 @@ FILE* bajaFisica(FILE* propiedades) {
         printf("Error en la apertura del archivo pArchivoBajas");
         exit(1);
     }
-    
+
     fseek(propiedades, 0, SEEK_END);
     nReg = ftell(propiedades) / sizeof(propiedad_t);
-    
+    fseek(propiedades, 0, SEEK_SET);
     for (int i = 0; i < nReg; i++){
         fread(&busqueda, sizeof(propiedad_t), 1, propiedades);
         if (busqueda.flag_activo == 0 && busqueda.id != 0){
-            fprintf(pArchivoBajas, "%-3d %-9s %-18s %-17s %-13d %-7d %-11.2f %-14.2f %-10.2f %-8s %-11s %-19s %-8s %-7d\n",
+            fprintf(pArchivoBajas, "%-3d %-9s %-18s %-17s %-13d %-7d %-11.2f %-14.2f %-10.2f %-8s %-11s %-19s %-8s %-7d\n"",
                     busqueda.id, busqueda.fecha_ingreso, busqueda.zona, busqueda.ciudad_barrio, busqueda.dormitorios,
                     busqueda.banos, busqueda.superficie_total, busqueda.superficie_cubierta, busqueda.precio,
                     busqueda.moneda, busqueda.tipo_propiedad, busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
@@ -690,7 +697,7 @@ FILE* bajaFisica(FILE* propiedades) {
             fwrite(&vacio, sizeof(propiedad_t), 1, propiedades);
         }
     }
-    
+
     return pArchivoBajas;
 }
 
@@ -725,7 +732,7 @@ int main(){
                 bajasXyz = bajaFisica(propiedades);
                 break;
             case 'g':
-                listarXyz(bajasXyz);
+                listarXyz();
                 break;
             case 'h':
             //cerrar el archivo y salir del programa
