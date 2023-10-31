@@ -64,4 +64,6 @@ Propiedad {
 			Simultáneamente se eliminan dichas propiedades del archivo 'propiedades.dat'.
 			
 11) Listar xyz: 
-			Imprime por pantalla el archivo de ‘propiedades_bajas_<fecha>.xyz’ construido en el paso anterior. 
+			Imprime por pantalla el archivo de ‘propiedades_bajas_<fecha>.xyz’ construido en el paso anterior.
+
+Dicho sistema se asegura de evitar errores en el ingreso de datos como ser el de caracteres erroneos, fechas que se excedan a la fecha actual y que los numeros con coma se registren como tal. Las propiedades que se pretenden, buscar o modificar realmente se encuentren dentro del archivo. Ademas, se busca que la propiedad que se pretende dar de baja sea correcta y sin fecha de salida.
