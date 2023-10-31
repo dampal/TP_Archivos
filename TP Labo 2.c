@@ -689,7 +689,7 @@ FILE* bajaFisica(FILE* propiedades) {
     for (int i = 0; i < nReg; i++){
         fread(&busqueda, sizeof(propiedad_t), 1, propiedades);
         if (busqueda.flag_activo == 0 && busqueda.id != 0){
-            fprintf(pArchivoBajas, "%-3d %-9s %-18s %-17s %-13d %-7d %-11.2f %-14.2f %-10.2f %-8s %-11s %-19s %-8s %-7d\n"",
+            fprintf(pArchivoBajas, "%-3d %-9s %-18s %-17s %-13d %-7d %-11.2f %-14.2f %-10.2f %-8s %-11s %-19s %-8s %-7d\n",
                     busqueda.id, busqueda.fecha_ingreso, busqueda.zona, busqueda.ciudad_barrio, busqueda.dormitorios,
                     busqueda.banos, busqueda.superficie_total, busqueda.superficie_cubierta, busqueda.precio,
                     busqueda.moneda, busqueda.tipo_propiedad, busqueda.operacion, busqueda.fecha_salida, busqueda.flag_activo);
