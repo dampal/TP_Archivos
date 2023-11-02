@@ -4,7 +4,6 @@
 #include <string.h>
 #include <ctype.h>
 
-
 int validarInt (char num[]){
     for(int i=0; i<strlen(num); i++){
         if(!isdigit(num[i])){
@@ -27,7 +26,7 @@ int validarFloat(char flotante[]){
 }
 
 int validarFecha(char fecha[]){
-    if(atoi(fecha)>10000000 && atoi(fecha)<99999999){
+    if(validarInt(fecha) && strlen(fecha)==8){
         int dd,mm,yy;
         dd = (fecha[0]-48)*10 + (fecha[1]-48);
         mm = (fecha[2]-48)*10 + (fecha[3]-48);

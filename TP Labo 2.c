@@ -154,7 +154,7 @@ void listarDat(FILE* propiedades){
                     imprimirPropiedad(prop);
                 } else if (strcmp(prop.tipo_propiedad, "PH") == 0 && op == 'p'){
                     imprimirPropiedad(prop);
-                } else if (strcmp(prop.tipo_propiedad, "Departamento") == 0 && op == 'd') {
+                } else if (strcmp(prop.tipo_propiedad, "Depto.") == 0 && op == 'd') {
                     imprimirPropiedad(prop);
                 }
             }
@@ -449,6 +449,7 @@ void buscarPorID(FILE * propiedades){
         printf ("Error, no existe el ID ingresado\n");
         }
 }
+
 void buscarPorOp(FILE * propiedades){
 
     int flag1 = 0, flag2 = 0;
