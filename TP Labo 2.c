@@ -1,3 +1,13 @@
+// GRUPO INMOBILIARIA BUBÚ
+//
+// INTEGRANTES:
+//      DAMIÁN PALOMBA
+//      MAYLÉN MONTERDE
+//      SOL ALCARAZ
+//      FRANCO MEDINA
+
+
+
 #define FILENAME "propiedades.dat"
 
 #include <stdio.h>
